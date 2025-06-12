@@ -1,0 +1,1 @@
+# anketa_sinteza_govora
