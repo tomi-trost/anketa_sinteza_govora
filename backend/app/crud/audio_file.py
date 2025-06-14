@@ -1,7 +1,7 @@
 ﻿from typing import Optional, List
 from uuid import UUID
 from sqlmodel import Session, select
-from app.models.audio_file import AudioFile, AudioFileCreate, AudioFileUpdate, UserReviewAudio
+from app.models.audio_file import AudioFile, AudioFileCreate, AudioFileUpdate, UserReviewAudio, CreateUserReviewAudio
 
 # ========================= AudioFile =========================
 
@@ -46,11 +46,13 @@ def delete_audio_file(session: Session, audio_file_id: UUID) -> bool:
 
 # ===================== UserReviewAudio =========================
 
-def create_user_review(session: Session, user_review_audio: UserReviewAudio) -> UserReviewAudio:
-    session.add(user_review_audio)
+def create_user_review(session: Session, user_review_audio: CreateUserReviewAudio) -> UserReviewAudio:
+    db_review = UserReviewAudio(**user_review_audio.model_dump())  # convert Pydantic -> ORM
+    session.add(db_review)
     session.commit()
-    session.refresh(user_review_audio)
-    return user_review_audio
+    session.refresh(db_review)
+    return db_review
+
 
 
 def delete_user_review(session: Session, user_id: UUID, audio_id: UUID) -> bool:
