@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { Open_Sans } from 'next/font/google'
+import { Open_Sans, Montserrat } from 'next/font/google'
 
 export const metadata: Metadata = {
   title: 'Raziskava o Razpoznavanju Sintetiziranega Govora',
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   generator: '',
 }
 
-const montserrat = Open_Sans({
+const montserrat = Montserrat({
   weight: ['300', '400', '500', '600', '700', '800'],
   style: ['normal'],
   subsets: ['latin'],

@@ -174,7 +174,7 @@ export async function getAudioFiles(): Promise<AudioFile[]> {
     );
 
     var paths = audioFiles.map(file => `/audio_files/${file}`);
-    paths = ["https://cdn.freesound.org/previews/749/749976_11667196-lq.mp3", ]
+    paths = ["https://www.myinstants.com/media/sounds/oiia-oiia-sound.mp3"]
     const result: AudioFile[] = audioFiles.map((file, index) => ({
       id: `audio-${index}`,
       type: path.extname(file).toLowerCase().replace('.', ''), // e.g., 'mp3', 'wav', 'ogg'
