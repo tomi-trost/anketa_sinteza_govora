@@ -7,12 +7,7 @@ BASE_URL = "http://api.localhost.tiangolo.com"
 
 # Authenticate and get token
 print("Requesting token from /api/v1/auth/device...")
-random_ip = ".".join(str(random.randint(0, 255)) for _ in range(4))
-auth_payload = {
-    "ip": random_ip,
-    "mac": "00:1A:2B:3C:4D:5E"
-}
-auth_response = requests.post(f"{BASE_URL}/api/v1/auth/device", json=auth_payload)
+auth_response = requests.post(f"{BASE_URL}/api/v1/auth/device")
 
 if auth_response.status_code != 200:
     print("❌ Failed to obtain JWT token. HTTP Error:", auth_response.status_code)
@@ -67,14 +62,22 @@ else:
     exit(1)
 
 audio_list_data = audio_list_response.json()
+
 if "message" in audio_list_data:
     print(f'Message: {audio_list_data["message"]}\n')
 
-if not audio_list_data:
+# Flatten nested dict-of-lists structure to get first audio file
+audio_file_id = None
+for audio_group in audio_list_data.values():
+    if isinstance(audio_group, list) and audio_group:
+        first_audio = audio_group[0]
+        audio_file_id = first_audio.get("id")
+        break
+
+if not audio_file_id:
     print("❌ No audio files found.")
     exit(1)
 
-audio_file_id = audio_list_data[0].get("id")
 print(f"✅ First audio file ID: {audio_file_id}\n")
 
 # PATCH /api/v1/questions/register-question

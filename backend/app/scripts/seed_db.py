@@ -52,13 +52,9 @@ def seed_audio_files(session: Session):
                 continue
 
             filename = audio_file.name
-            if not (filename.startswith("_") or filename.startswith("#")):
-                print(f"Skipping file with unexpected name: {filename}")
-                continue
-
-            audio_type = AudioType.synthetic if filename.startswith("_") else AudioType.human
-            code = filename[1:].split(".")[0]
+            code = filename.split("-")[0].strip()
             file_path = f"/audio/{narrator_folder.name}/{filename}"
+            audio_type = AudioType.synthetic if code.endswith("S") else AudioType.human
 
             audio_in = AudioFileCreate(
                 type=audio_type,
