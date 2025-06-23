@@ -3,10 +3,12 @@ from fastapi.responses import JSONResponse
 from sqlmodel import Session
 from typing import List
 from uuid import UUID
+from pathlib import Path
 
-from app.models.audio_file import AudioFileOut, CreateUserReviewAudio, UserReviewAudioIn
+from app.models.audio_file import AudioFileOut, CreateUserReviewAudio, UserReviewAudioIn, TestAudioFile
 from app.crud import audio_file as crud_audio_file
 from app.api.deps import SessionDep, CurrentUser
+
 
 router = APIRouter(prefix="/audio", tags=["Audio Review"])
 
@@ -16,6 +18,13 @@ def list_audio_files(session: SessionDep):
     """List all audio files available for review."""
     return crud_audio_file.get_all_audio_files(session)
 
+
+@router.get("/test-filepath", response_model=TestAudioFile)
+def get_audio_test_file_path():
+    """Get test audio file file path."""
+    return TestAudioFile(
+        file_path=f"/audio/Preizkus slisnosti - Ana- 16bit 48kHz - BlackBird Sound Master - B1.wav"
+    )
 
 @router.get("/{audio_id}", response_model=AudioFileOut)
 def get_audio_file(audio_id: UUID, session: SessionDep):

@@ -10,6 +10,12 @@ if TYPE_CHECKING:
 
 from app.models import Narrator, User
 
+# ===== TestAudioFile =====
+
+class TestAudioFile(SQLModel):
+    file_path: str
+
+
 # ===== AudioFile =====
 
 class AudioType(str, enum.Enum):
