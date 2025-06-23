@@ -38,6 +38,23 @@ def delete_user(session: Session, user_id: UUID) -> bool:
     return True
 
 
-def get_by_ip_mac(session: Session, ip: str, mac: str) -> Optional[User]:
-    statement = select(User).where((User.ip == ip) & (User.mac == mac))
-    return session.exec(statement).first()
+# def get_by_ip_mac(session: Session, ip: str, mac: str) -> Optional[User]:
+#     statement = select(User).where((User.ip == ip) & (User.mac == mac))
+#     return session.exec(statement).first()
+
+
+def get_already_filled_fields(session: Session, user_id: UUID, user_update: UserUpdate) -> List[str]:
+    user = session.get(User, user_id)
+    if not user:
+        raise Exception("User with this id doesn't exist")
+
+    update_data = user_update.model_dump(exclude_unset=True)
+    already_filled_fields = []
+
+    for field, new_value in update_data.items():
+        current_value = getattr(user, field, None)
+        if current_value is not None:
+            already_filled_fields.append(field)
+
+    return already_filled_fields
+

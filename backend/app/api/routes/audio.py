@@ -69,6 +69,10 @@ def get_audio_file(audio_id: UUID, session: SessionDep):
 @router.post("/review/{audio_id}", response_class=JSONResponse)
 def submit_audio_review(session: SessionDep, current_user: CurrentUser, audio_id: str, review_data: UserReviewAudioIn):
     """Submit a review for an audio file."""
+    review = crud_audio_file.get_user_review(session, current_user.id, audio_id)
+    if review:
+        raise HTTPException(status_code=409, detail="A review for this audio file has already been submitted.")
+    
     review_data_create = CreateUserReviewAudio(
         review=review_data.review,
         user_id=current_user.id,
