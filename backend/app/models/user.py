@@ -5,7 +5,6 @@ import enum
 from datetime import datetime, timezone
 
 
-
 if TYPE_CHECKING:
     # only for type hints, not executed at runtime (avoids circular import)
     from .narrator import UserKnowsNarrator
@@ -19,6 +18,17 @@ class Gender(str, enum.Enum):
     moski = "moški"
     zenski = "ženski"
     drugo = "ne želim se opredeliti"
+
+
+class Education(str, enum.Enum):
+    osnovnosolska = "osnovnošolska"
+    srednjesolska = "srednješolska"
+    visjesolska = "višješolska"
+    visokosolska = "visokošolska (1. bolonjska stopnja)"
+    univerzitetna = "univerzitetna (2. bolonjska stopnja)"
+    magisterij = "magisterij znanosti"
+    doktorat = "doktorat znanosti"
+    drugo = "drugo"
 
 
 class DeviceLabel(str, enum.Enum):
@@ -73,7 +83,8 @@ class UserBase(SQLModel):
 
     gender: Optional[Gender] = None
     age: Optional[int] = None
-    education: Optional[str] = None
+    education: Optional[Education] = None
+    education_other_input: Optional[str] = None
 
     device_lable: Optional[DeviceLabel] = None
     device_other_input: Optional[str] = None 
@@ -103,7 +114,8 @@ class UserUpdate(SQLModel):
 
     gender: Optional[Gender] = None
     age: Optional[int] = None
-    education: Optional[str] = None
+    education: Optional[Education] = None
+    education_other_input: Optional[str] = None
 
     media_experience: Optional[bool] = None
     media_role: Optional[MediaRole] = None
