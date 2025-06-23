@@ -22,7 +22,7 @@ class Gender(str, enum.Enum):
 
 
 class DeviceLabel(str, enum.Enum):
-    namizni = "namizni_računalnik_z ločenimi zvočniki"
+    namizni = "namizni računalnik z ločenimi zvočniki"
     prenosni = "prenosni računalnik z vgrajenimi zvočniki"
     tablica = "tablica"
     telefon = "telefon"
@@ -39,6 +39,7 @@ class MediaRole(str, enum.Enum):
     snemalec = "snemalec slike, direktor fotografije, montažer"
     reziser = "režiser, realizator, producent"
     glasbenik = "glasbenik, glasbeni producent"
+    drugo = "drugo"
 
 
 class SpeachRole(str, enum.Enum):

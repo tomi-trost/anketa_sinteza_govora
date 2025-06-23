@@ -45,8 +45,8 @@ class Narrator(NarratorBase, table=True):
 
 class KnowsNarratorLabel(str, enum.Enum):
     ne_poznam = "Glasu ne poznam"
-    poznam_glas = "Glas govorca poznam iz medijev ne vem pa kdo je"
-    poznam_kdo = "Govorca ne poznam osebno vem pa kdo je"
+    poznam_glas = "Glas govorca poznam iz medijev, ne vem pa, kdo je"
+    poznam_kdo = "Govorca ne poznam osebno, vem pa, kdo je"
     osebno_poznam = "Govorca osebno poznam"
 
 # ----------------------------------s
