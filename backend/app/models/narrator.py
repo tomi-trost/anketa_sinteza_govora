@@ -54,6 +54,7 @@ class KnowsNarratorLabel(str, enum.Enum):
 class UserKnowsNarratorBase(SQLModel):
     knows_narrator_lable: KnowsNarratorLabel
     narrator_prediction: Optional[str] = None
+    comment: Optional[str] = None
 
 
 class UserKnowsNarratorIn(UserKnowsNarratorBase):
@@ -68,6 +69,7 @@ class UserKnowsNarratorCreate(UserKnowsNarratorBase):
 class UserKnowsNarratorUpdate(SQLModel):
     knows_narrator_lable: Optional[KnowsNarratorLabel] = None
     narrator_prediction: Optional[str] = None
+    comment: Optional[str] = None
 
 
 class UserKnowsNarratorOut(UserKnowsNarratorBase):

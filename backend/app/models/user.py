@@ -29,6 +29,7 @@ class DeviceLabel(str, enum.Enum):
     slusalke = "slušalke"
     bluetooth_zvocnik = "prenosni bluetooth zvočnik"
     zvocni_sistem = "visokokakovosten zvočni sistem"
+    drugo = "drugo"
 
 
 class MediaRole(str, enum.Enum):
@@ -43,6 +44,7 @@ class MediaRole(str, enum.Enum):
 
 
 class SpeachRole(str, enum.Enum):
+    govorec = "govorec, napovedovalec, voditelj"
     novinar = "novinar podkaster vplivnež"
     igralec = "igralec, pripovedovalec, animator, improvizator, standup komik"
     trener = "trener govora ali javnega nastopanja"
