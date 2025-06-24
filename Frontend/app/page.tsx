@@ -25,7 +25,7 @@ export default function SpeechSurvey() {
     checkUser,
     setCurrentPage,
     setCanHearWell,
-    handleAudioPlay,
+    handleTestAudioPlay,
     handleDemographicsChange,
     handleVoiceRecognitionChange,
     playAudio,
@@ -76,7 +76,7 @@ export default function SpeechSurvey() {
           canHearWell={canHearWell}
           isPlaying={isPlaying}
           onHearingChange={setCanHearWell}
-          onAudioPlay={handleAudioPlay}
+          onAudioPlay={handleTestAudioPlay}
           onNext={handleNextPage}
           onBack={() => setCurrentPage(0)}
         />

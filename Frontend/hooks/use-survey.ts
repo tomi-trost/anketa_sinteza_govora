@@ -10,6 +10,7 @@ import {
   submitAudioReview,
   saveUserNarratorRecognition,
   verifyCaptcha,
+  getTestAudioFile,
   // checkUserExists,
 } from "@/lib/api";
 import {
@@ -28,11 +29,13 @@ export function useSurvey() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [audioGroups, setAudioGroups] = useState<AudioGroup[]>([]);
+  const [testAudio, setTestAudio] = useState<string | null>(null);
   const [currentAudioGroupIndex, setCurrentAudioGroupIndex] = useState(0);
   const [alreadyCompleted, setAlreadyCompleted] = useState(false);
 
   const [demographics, setDemographics] = useState<DemographicsDataSurvey>({
     device_lable: "",
+    device_other_input: "",
     gender: "",
     education: "",
     media_experience: "",
@@ -93,44 +96,10 @@ export function useSurvey() {
 
         // Load audio files from API
         try {
-          const audioFiles = await getAudioFiles();
-
+          const groups: AudioGroup[] = await getAudioFiles();
+          const testAudio = await getTestAudioFile();
+          setTestAudio(testAudio);
           // Group audio files by narrator
-          const groupedAudio: { [key: string]: AudioQuestion[] } = {};
-
-          audioFiles.forEach((file) => {
-            if (!groupedAudio[file.narrator_id]) {
-              groupedAudio[file.narrator_id] = [];
-            }
-
-            groupedAudio[file.narrator_id].push({
-              id: file.id,
-              audioUrl: file.file_path,
-              text: `Posnetek ${groupedAudio[file.narrator_id].length + 1}`,
-              played: false,
-              answered: false,
-              answer: "",
-              isPlaying: false,
-              progress: 0,
-              narratorId: file.narrator_id,
-              code: file.code,
-            });
-          });
-
-          // Convert to array of audio groups
-          const groups: AudioGroup[] = Object.keys(groupedAudio).map(
-            (narratorId, index) => ({
-              id: groupedAudio[narratorId][0].id,
-              title: `Glas ${index + 1} od 4`,
-              questions: groupedAudio[narratorId],
-              completed: false,
-              voiceRecognition: {
-                recognized: "",
-                speakerName: "",
-                comment: "",
-              },
-            })
-          );
 
           setAudioGroups(groups);
 
@@ -295,9 +264,23 @@ export function useSurvey() {
     currentAudioGroupIndex,
   ]);
 
-  const handleAudioPlay = () => {
-    setIsPlaying(!isPlaying);
-    setTimeout(() => setIsPlaying(false), 3000);
+  const handleTestAudioPlay = async () => {
+    if (isPlaying) {
+      return;
+    }
+    if (!testAudio) {
+      const testAudio = await getTestAudioFile();
+      setTestAudio(testAudio);
+    }
+    setIsPlaying(true);
+    const audioElement = new Audio(testAudio || "");
+    audioElement.play().catch((error) => {
+      console.error("Audio playback failed:", error);
+      setIsPlaying(false);
+    })
+    audioElement.addEventListener("ended", () => {
+      setIsPlaying(false);
+    });
   };
 
   const handleDemographicsChange = (
@@ -485,7 +468,7 @@ export function useSurvey() {
     saveAudioReview,
     setCurrentPage,
     setCanHearWell,
-    handleAudioPlay,
+    handleTestAudioPlay,
     handleDemographicsChange,
     handleVoiceRecognitionChange,
     playAudio,

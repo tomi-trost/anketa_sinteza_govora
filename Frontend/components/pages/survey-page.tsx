@@ -77,7 +77,7 @@ export function SurveyPage({
 
                 return (
                   <div
-                    key={question.id}
+                    key={question.id + index}
                     className={`border rounded-md overflow-hidden transition-all duration-300 ${
                       question.answered
                         ? "border-green-500 bg-green-50"
@@ -259,7 +259,7 @@ export function SurveyPage({
                       </div>
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem
-                          value="Glas govorca poznam iz medijev ne vem pa kdo je"
+                          value="Glas govorca poznam iz medijev, ne vem pa, kdo je"
                           id="voice-media"
                         />
                         <Label
@@ -271,7 +271,7 @@ export function SurveyPage({
                       </div>
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem
-                          value="Govorca ne poznam osebno vem pa kdo je"
+                          value="Govorca ne poznam osebno, vem pa, kdo je"
                           id="voice-know-who"
                         />
                         <Label
@@ -282,7 +282,7 @@ export function SurveyPage({
                         </Label>
                       </div>
                       {currentGroup.voiceRecognition.recognized ===
-                        "Govorca ne poznam osebno vem pa kdo je" && (
+                        "Govorca ne poznam osebno, vem pa, kdo je" && (
                         <div className="pl-6">
                           <Input
                             placeholder="Vpiši ime"

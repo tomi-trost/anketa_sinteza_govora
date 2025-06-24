@@ -4,7 +4,10 @@ import { promises as fs } from "fs";
 import path from "path";
 import {
   AudioFile,
+  AudioGroup,
+  AudioQuestion,
   DemographicsDataSurvey,
+  NarratorAudioMap,
   UserData,
   VoiceRecognition,
 } from "./types/survey";
@@ -18,10 +21,10 @@ const API_AUTH =
   "http://localhost:8000/api/v1/auth/device";
 
 export async function createUser(): Promise<string> {
-  const randomIp = `192.168.${Math.floor(Math.random() * 256)}.${Math.floor(
-    Math.random() * 256
-  )}`;
-  const randomMac = `00:0${Math.floor(Math.random() * 10)}:00:00:00:00`;
+  // const randomIp = `192.168.${Math.floor(Math.random() * 256)}.${Math.floor(
+  //   Math.random() * 256
+  // )}`;
+  // const randomMac = `00:0${Math.floor(Math.random() * 10)}:00:00:00:00`;
 
   try {
     const response = await fetch(API_AUTH, {
@@ -29,10 +32,6 @@ export async function createUser(): Promise<string> {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        ip: randomIp,
-        mac: randomMac,
-      }),
     });
 
     if (!response.ok) {
@@ -82,44 +81,51 @@ export async function saveUserData(
   data: DemographicsDataSurvey
 ): Promise<any> {
   try {
-    // const userData: UserData = {
-    //   email: data.email,
-    //   device_lable: data.device_lable,
-    //   device_other_input: data.device_other_input || "",
-    //   gender: data.gender,
-    //   age: 0,
-    //   education: data.education,
-    //   media_experience: false, // Assuming media experience is always true
-    //   media_role: data.media_role || "",
-    //   media_other_input: data.media_other_input || "",
-    //   speach_experience: false,
-    //   speach_role: data.speach_role || "",
-    //   speach_other_role: data.speach_other_role || "",
-    //   synthetic_speach_experience: false,
-    //   synthetic_speach_role: data.synthetic_speach_role || "",
-    //   synthetic_speach_other_role: data.synthetic_speach_other_role || "",
-    // };
-
-    let user = {
-      email: "string",
-      device_lable: "namizni_računalnik_z ločenimi zvočniki",
-      device_other_input: "string",
-      gender: "moški",
+    const userData: UserData = {
+      email: data.email,
+      device_lable: data.device_lable,
+      device_other_input:
+        data.device_other_input == "" ? null : data.device_other_input,
+      gender: data.gender,
       age: 0,
-      education: "string",
-      media_experience: true,
-      media_role: "govorec, napovedovalec, voditelj, igralec",
-      media_other_input: "string",
-      speach_experience: true,
-      speach_role: "novinar podkaster vplivnež",
-      speach_other_role: "string",
-      synthetic_speach_experience: true,
+      education: data.education,
+      media_experience: false, // Assuming media experience is always true
+      media_role: data.media_role == "" ? null : data.media_role,
+      media_other_input:
+        data.media_other_input == "" ? null : data.media_other_input,
+      speach_experience: false,
+      speach_role: data.speach_role == "" ? null : data.speach_role,
+      speach_other_role:
+        data.speach_other_role == "" ? null : data.speach_other_role,
+      synthetic_speach_experience: false,
       synthetic_speach_role:
-        "Pri produkciji avdio ali avdiovizualnih vsebin sem že kdaj uporabil sintetizirani govor",
-      synthetic_speach_other_role: "string",
+        data.synthetic_speach_role == "" ? null : data.synthetic_speach_role,
+      synthetic_speach_other_role:
+        data.synthetic_speach_other_role == ""
+          ? null
+          : data.synthetic_speach_other_role,
     };
 
-    console.log("Saving user data:", user);
+    // let user = {
+    //   email: "string",
+    //   device_lable: "namizni_računalnik_z ločenimi zvočniki",
+    //   device_other_input: "string",
+    //   gender: "moški",
+    //   age: 0,
+    //   education: "string",
+    //   media_experience: true,
+    //   media_role: "govorec, napovedovalec, voditelj, igralec",
+    //   media_other_input: "string",
+    //   speach_experience: true,
+    //   speach_role: "novinar podkaster vplivnež",
+    //   speach_other_role: "string",
+    //   synthetic_speach_experience: true,
+    //   synthetic_speach_role:
+    //     "Pri produkciji avdio ali avdiovizualnih vsebin sem že kdaj uporabil sintetizirani govor",
+    //   synthetic_speach_other_role: "string",
+    // };
+
+    console.log("Saving user data:", userData);
     // console.log("acces token", access_token)
     const response = await fetch(
       `${API_BASE_URL}/questions/register-question`,
@@ -129,7 +135,7 @@ export async function saveUserData(
           "Content-Type": "application/json",
           Authorization: `Bearer ${access_token}`,
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify(userData),
       }
     );
 
@@ -184,6 +190,20 @@ export async function saveUserNarratorRecognition(
   voiceRecognition: VoiceRecognition
 ): Promise<any> {
   try {
+    const req = JSON.stringify({
+      knows_narrator_lable: voiceRecognition.recognized,
+      narrator_prediction:
+        voiceRecognition.speakerName == ""
+          ? null
+          : voiceRecognition.speakerName,
+      comment: voiceRecognition.comment == "" ? null : voiceRecognition.comment,
+    });
+    console.log(
+      "Saving narrator recognition:",
+      req,
+      "for narratorId:",
+      narratorId
+    );
     const response = await fetch(
       `${API_BASE_URL}/questions/narrator-knowledge/${narratorId}`,
       {
@@ -194,8 +214,12 @@ export async function saveUserNarratorRecognition(
         },
         body: JSON.stringify({
           knows_narrator_lable: voiceRecognition.recognized,
-          narrator_prediction: voiceRecognition.speakerName || "",
-          comment: voiceRecognition.comment || "",
+          narrator_prediction:
+            voiceRecognition.speakerName == ""
+              ? null
+              : voiceRecognition.speakerName,
+          comment:
+            voiceRecognition.comment == "" ? null : voiceRecognition.comment,
         }),
       }
     );
@@ -228,7 +252,7 @@ export async function getUserData(userId: string): Promise<any> {
 }
 
 // Get audio files
-export async function getAudioFiles(): Promise<AudioFile[]> {
+export async function getAudioFiles(): Promise<AudioGroup[]> {
   try {
     const response = await fetch(`${API_BASE_URL}/audio`);
 
@@ -236,16 +260,42 @@ export async function getAudioFiles(): Promise<AudioFile[]> {
       throw new Error(`API error: ${response.status}`);
     }
 
-    const audioFiles: AudioFile[] = await response.json();
+    const audioFiles: NarratorAudioMap = await response.json();
 
-    const result: AudioFile[] = audioFiles.map((file, index) => ({
-      id: file.id,
-      type: file.type === "human" ? "human" : "synthetic",
-      narrator_id: file.narrator_id,
-      code: file.code,
-      file_path: API_URL + file.file_path,
-    }));
-    return result;
+    const groupedAudio: { [key: string]: AudioQuestion[] } = {};
+
+    for (const [narratorId, files] of Object.entries(audioFiles)) {
+      groupedAudio[narratorId] = files.map((file, index) => ({
+        id: file.id,
+        audioUrl: API_URL + file.file_path,
+        text: `Posnetek ${index + 1}`,
+        played: false,
+        answered: false,
+        answer: "",
+        isPlaying: false,
+        progress: 0,
+        narratorId: file.narrator_id,
+        code: file.code,
+      }));
+    }
+    // console.log("Grouped audio files:", groupedAudio);
+    // Convert to array of audio groups
+    const groups: AudioGroup[] = Object.keys(groupedAudio).map(
+      (narratorId, index) => ({
+        id: groupedAudio[narratorId][0].id,
+        title: `Glas ${index + 1} od 4`,
+        questions: groupedAudio[narratorId],
+        completed: false,
+        voiceRecognition: {
+          recognized: "",
+          speakerName: "",
+          comment: "",
+        },
+      })
+    );
+
+    console.log("Audio groups:", groups);
+    return groups;
 
     // if (!response.ok) {
     //   throw new Error(`API error: ${response.status}`)
@@ -257,6 +307,19 @@ export async function getAudioFiles(): Promise<AudioFile[]> {
     throw error;
   }
 }
+
+export const getTestAudioFile = async () => {
+  const response = await fetch(`${API_BASE_URL}/audio/test-filepath`);
+
+  if (!response.ok) {
+    throw new Error(`API error: ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  const audioFilePath = data.file_path;
+  return `${API_URL}${audioFilePath}`;
+};
 
 export const submitAudioReview = async (
   access_token: string,
@@ -290,9 +353,9 @@ export const submitAudioReview = async (
 };
 
 export const verifyCaptcha = async (token: string): Promise<boolean> => {
-  const secretKey = process.env.RECAPTCHA_SECRET_KEY
+  const secretKey = "6LfiomsrAAAAAM3NejMevW9-ep9IO2N6snqTYv6x"; //process.env.RECAPTCHA_SECRET_KEY
   console.log("secretKey", secretKey);
-  
+
   if (!secretKey) {
     throw new Error("RECAPTCHA_SECRET_KEY is not defined in env");
   }
@@ -301,13 +364,16 @@ export const verifyCaptcha = async (token: string): Promise<boolean> => {
   }
 
   try {
-    const response = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: `secret=${secretKey}&response=${token}`,
-    });
+    const response = await fetch(
+      "https://www.google.com/recaptcha/api/siteverify",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `secret=${secretKey}&response=${token}`,
+      }
+    );
 
     const data = await response.json();
 

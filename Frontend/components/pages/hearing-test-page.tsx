@@ -15,7 +15,7 @@ interface HearingTestPageProps {
   canHearWell: boolean;
   isPlaying: boolean;
   onHearingChange: (checked: boolean) => void;
-  onAudioPlay: () => void;
+  onAudioPlay: () => Promise<void>;
   onNext: () => void;
   onBack: () => void;
 }

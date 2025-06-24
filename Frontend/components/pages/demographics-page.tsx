@@ -63,7 +63,7 @@ export function DemographicsPage({
                     <SelectValue placeholder="Izberite napravo" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="namizni_računalnik_z ločenimi zvočniki">
+                    <SelectItem value="namizni računalnik z ločenimi zvočniki">
                       namizni računalnik z ločenimi zvočniki
                     </SelectItem>
                     <SelectItem value="prenosni računalnik z vgrajenimi zvočniki">
@@ -82,12 +82,12 @@ export function DemographicsPage({
                     <SelectItem value="drugo">drugo (vpiši):</SelectItem>
                   </SelectContent>
                 </Select>
-                {demographics.device_lable === "other" && (
+                {demographics.device_lable === "drugo" && (
                   <div className="pl-6 pt-2">
                     <Label className="text-sm font-medium">
                       Vpišite napravo:
                     </Label>
-                    <Textarea
+                    <Input
                       value={demographics.device_other_input}
                       onChange={(e) =>
                         onDemographicsChange(
@@ -120,7 +120,10 @@ export function DemographicsPage({
                     <Label htmlFor="gender-female">Ženska</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="ne želim se opredeliti" id="gender-other" />
+                    <RadioGroupItem
+                      value="ne želim se opredeliti"
+                      id="gender-other"
+                    />
                     <Label htmlFor="gender-other">Ne želim se opredeliti</Label>
                   </div>
                 </RadioGroup>
@@ -139,17 +142,24 @@ export function DemographicsPage({
                     <SelectValue placeholder="Izberite stopnjo izobrazbe" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Osnovna šola">Osnovna šola</SelectItem>
-                    <SelectItem value="Srednja šola">Srednja šola</SelectItem>
-                    <SelectItem value="Univerzitetna izobrazba (1. stopnja)">
+                    <SelectItem value="osnovnošolska">Osnovna šola</SelectItem>
+                    <SelectItem value="srednješolska">Srednja šola</SelectItem>
+                    <SelectItem value="višješolska">
+                      Višješolska izobrazba
+                    </SelectItem>
+                    <SelectItem value="visokošolska (1. bolonjska stopnja)">
+                      Visokošolska (1. bolonjska stopnja)
+                    </SelectItem>
+                    <SelectItem value="univerzitetna (2. bolonjska stopnja)">
                       Univerzitetna izobrazba (1. stopnja)
                     </SelectItem>
-                    <SelectItem value="Magistrska izobrazba (2. stopnja)">
-                      Magistrska izobrazba (2. stopnja)
+                    <SelectItem value="magisterij znanosti">
+                      Magisterij znanosti
                     </SelectItem>
-                    <SelectItem value="Doktorska izobrazba (3. stopnja)">
-                      Doktorska izobrazba (3. stopnja)
+                    <SelectItem value="doktorat znanosti">
+                      Doktorat znanosti
                     </SelectItem>
+                    <SelectItem value="drugo">Drugo</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -179,8 +189,7 @@ export function DemographicsPage({
                 {demographics.media_experience === "yes" && (
                   <div className="pl-6 pt-2 space-y-3 px-3">
                     <Label className="text-sm font-medium">
-                     Kakšna je vaša vloga v elektronskih medijih?
-
+                      Kakšna je vaša vloga v elektronskih medijih?
                     </Label>
                     <RadioGroup
                       value={demographics.media_role}
@@ -190,7 +199,10 @@ export function DemographicsPage({
                       className="space-y-2"
                     >
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="govorec, napovedovalec, voditelj, igralec" id="work-announcer" />
+                        <RadioGroupItem
+                          value="govorec, napovedovalec, voditelj, igralec"
+                          id="work-announcer"
+                        />
                         <Label htmlFor="work-announcer" className="text-sm">
                           govorec, napovedovalec, voditelj, igralec
                         </Label>
@@ -205,32 +217,47 @@ export function DemographicsPage({
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="podkaster, vplivnež, snovalec digitalni vsebin, digitalni marketingar" id="work-actor" />
+                        <RadioGroupItem
+                          value="podkaster, vplivnež, snovalec digitalni vsebin, digitalni marketingar"
+                          id="work-actor"
+                        />
                         <Label htmlFor="work-actor" className="text-sm">
                           podkaster, vplivnež, snovalec digitalnih vsebin,
                           digitalni marketingar
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="tonski mojster, snemalec zvoka" id="work-coach" />
+                        <RadioGroupItem
+                          value="tonski mojster, snemalec zvoka"
+                          id="work-coach"
+                        />
                         <Label htmlFor="work-coach" className="text-sm">
                           tonski mojster, snemalec zvoka
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="snemalec slike, direktor fotografije, montažer" id="work-linguist" />
+                        <RadioGroupItem
+                          value="snemalec slike, direktor fotografije, montažer"
+                          id="work-linguist"
+                        />
                         <Label htmlFor="work-linguist" className="text-sm">
                           snemalec slike, direktor fotografije, montažer
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="režiser, realizator, producent" id="work-writer" />
+                        <RadioGroupItem
+                          value="režiser, realizator, producent"
+                          id="work-writer"
+                        />
                         <Label htmlFor="work-writer" className="text-sm">
                           režiser, realizator, producent
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="glasbenik, glasbeni producent" id="work-teacher" />
+                        <RadioGroupItem
+                          value="glasbenik, glasbeni producent"
+                          id="work-teacher"
+                        />
                         <Label htmlFor="work-teacher" className="text-sm">
                           glasbenik, glasbeni producent
                         </Label>
@@ -244,12 +271,9 @@ export function DemographicsPage({
                       {demographics.media_role === "drugo" && (
                         <div className="pl-6">
                           <Input
-                            value={demographics.media_role}
+                            value={demographics.media_other_input}
                             onChange={(e) =>
-                              onDemographicsChange(
-                                "media_role",
-                                e.target.value
-                              )
+                              onDemographicsChange("media_other_input", e.target.value)
                             }
                             placeholder="Vpišite vaš poklic"
                             className="mt-1"
@@ -295,7 +319,10 @@ export function DemographicsPage({
                       className="space-y-2"
                     >
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="govorec, napovedovalec, voditelj" id="work-announcer" />
+                        <RadioGroupItem
+                          value="govorec, napovedovalec, voditelj"
+                          id="work-announcer"
+                        />
                         <Label htmlFor="work-announcer" className="text-sm">
                           govorec, napovedovalec, voditelj
                         </Label>
@@ -310,38 +337,56 @@ export function DemographicsPage({
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="igralec, pripovedovalec, animator, improvizator, standup komik" id="work-actor" />
+                        <RadioGroupItem
+                          value="igralec, pripovedovalec, animator, improvizator, standup komik"
+                          id="work-actor"
+                        />
                         <Label htmlFor="work-actor" className="text-sm">
                           igralec, pripovedovalec, animator, improvizator,
                           stand-up komik
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="trener govora ali javnega nastopanja" id="work-coach" />
+                        <RadioGroupItem
+                          value="trener govora ali javnega nastopanja"
+                          id="work-coach"
+                        />
                         <Label htmlFor="work-coach" className="text-sm">
                           trener govora ali javnega nastopanja
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="lektor, slavist, prevajalec, tolmač" id="work-linguist" />
+                        <RadioGroupItem
+                          value="lektor, slavist, prevajalec, tolmač"
+                          id="work-linguist"
+                        />
                         <Label htmlFor="work-linguist" className="text-sm">
                           lektor, slavist, prevajalec, tolmač
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="pisatelj, pesnik, esejist, publicist, kritik" id="work-writer" />
+                        <RadioGroupItem
+                          value="pisatelj, pesnik, esejist, publicist, kritik"
+                          id="work-writer"
+                        />
                         <Label htmlFor="work-writer" className="text-sm">
                           pisatelj, pesnik, esejist, publicist, kritik
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="učitelj, predavatelj" id="work-teacher" />
+                        <RadioGroupItem
+                          value="učitelj, predavatelj"
+                          id="work-teacher"
+                        />
                         <Label htmlFor="work-teacher" className="text-sm">
                           učitelj, predavatelj
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="pevec, zborovodja, učitelj petja" id="work-singer" />
+                        <RadioGroupItem
+                          value="pevec, zborovodja, učitelj petja"
+                          id="work-singer"
+                        />
                         <Label htmlFor="work-singer" className="text-sm">
                           pevec, zborovodja, učitelj petja
                         </Label>
@@ -373,7 +418,7 @@ export function DemographicsPage({
                           drugo (vpiši):
                         </Label>
                       </div>
-                      {demographics.speach_role === "other" && (
+                      {demographics.speach_role === "drugo" && (
                         <div className="pl-6">
                           <Input
                             value={demographics.speach_other_role}
@@ -398,9 +443,7 @@ export function DemographicsPage({
                   Ali imate izkušnje na področju sintetiziranega govora?
                 </Label>
                 <RadioGroup
-                  value={
-                    demographics.synthetic_speach_experience
-                  }
+                  value={demographics.synthetic_speach_experience}
                   onValueChange={(value) =>
                     onDemographicsChange("synthetic_speach_experience", value)
                   }
@@ -429,8 +472,7 @@ export function DemographicsPage({
                     >
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem
-                          value="Pri produkciji avdio ali avdiovizualnih vsebin sem že
-                          kdaj uporabil sintetizirani govor."
+                          value="Pri produkciji avdio ali avdiovizualnih vsebin sem že kdaj uporabil sintetizirani govor"
                           id="synth-used-once"
                         />
                         <Label htmlFor="synth-used-once" className="text-sm">
@@ -478,7 +520,7 @@ export function DemographicsPage({
                           drugo (vpiši):
                         </Label>
                       </div>
-                      {demographics.synthetic_speach_role === "other" && (
+                      {demographics.synthetic_speach_role === "drugo" && (
                         <div className="pl-6 pb-6">
                           <Input
                             value={demographics.synthetic_speach_other_role}
