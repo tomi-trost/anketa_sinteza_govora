@@ -6,14 +6,20 @@ import {
   saveUserData,
   saveUserReview,
   getAudioFiles,
-  checkUserExists,
+  createUser,
+  submitAudioReview,
+  saveUserNarratorRecognition,
+  verifyCaptcha,
+  // checkUserExists,
 } from "@/lib/api";
 import {
   AudioGroup,
-  DemographicsData,
+  DemographicsDataSurvey,
   AudioQuestion,
   VoiceRecognition,
 } from "@/lib/types/survey";
+import { cookies } from "next/dist/server/request/cookies";
+import { isDemographicsComplete } from "@/lib/utils/utils";
 
 export function useSurvey() {
   const [userId, setUserId] = useState<string>("");
@@ -25,18 +31,21 @@ export function useSurvey() {
   const [currentAudioGroupIndex, setCurrentAudioGroupIndex] = useState(0);
   const [alreadyCompleted, setAlreadyCompleted] = useState(false);
 
-  const [demographics, setDemographics] = useState<DemographicsData>({
-    device: "",
+  const [demographics, setDemographics] = useState<DemographicsDataSurvey>({
+    device_lable: "",
     gender: "",
     education: "",
-    audioWork: "",
-    audioWorkDetails: "",
-    audioWorkOther: "",
-    languageWork: "",
-    languageWorkDetails: "",
-    syntheticSpeechFamiliarity: "",
-    syntheticSpeechExperience: "",
-    syntheticSpeechExperienceOther: "",
+    media_experience: "",
+    media_role: "",
+    media_other_input: "",
+    speach_experience: "",
+    speach_role: "",
+    speach_other_role: "",
+    synthetic_speach_experience: "",
+    synthetic_speach_role: "",
+    synthetic_speach_other_role: "",
+    email: "",
+    age: 0,
   });
 
   // Initialize user session and load data
@@ -46,14 +55,14 @@ export function useSurvey() {
 
       try {
         // Check if user has already completed the survey based on IP/MAC
-        const userExistsCheck = await checkUserExists();
+        // const userExistsCheck = await checkUserExists();
 
-        if (userExistsCheck.exists) {
-          // User has already completed the survey
-          setAlreadyCompleted(true);
-          setIsLoading(false);
-          return;
-        }
+        // if (userExistsCheck.exists) {
+        //   // User has already completed the survey
+        //   setAlreadyCompleted(true);
+        //   setIsLoading(false);
+        //   return;
+        // }
 
         // Check for existing user ID in localStorage
         let userIdFromStorage = localStorage.getItem("survey_user_id");
@@ -90,20 +99,20 @@ export function useSurvey() {
           const groupedAudio: { [key: string]: AudioQuestion[] } = {};
 
           audioFiles.forEach((file) => {
-            if (!groupedAudio[file.narrator]) {
-              groupedAudio[file.narrator] = [];
+            if (!groupedAudio[file.narrator_id]) {
+              groupedAudio[file.narrator_id] = [];
             }
 
-            groupedAudio[file.narrator].push({
+            groupedAudio[file.narrator_id].push({
               id: file.id,
               audioUrl: file.file_path,
-              text: `Posnetek ${groupedAudio[file.narrator].length + 1}`,
+              text: `Posnetek ${groupedAudio[file.narrator_id].length + 1}`,
               played: false,
               answered: false,
               answer: "",
               isPlaying: false,
               progress: 0,
-              narratorId: file.narrator,
+              narratorId: file.narrator_id,
               code: file.code,
             });
           });
@@ -111,8 +120,8 @@ export function useSurvey() {
           // Convert to array of audio groups
           const groups: AudioGroup[] = Object.keys(groupedAudio).map(
             (narratorId, index) => ({
-              id: index + 1,
-              title: `Glas ${index + 1}`,
+              id: groupedAudio[narratorId][0].id,
+              title: `Glas ${index + 1} od 4`,
               questions: groupedAudio[narratorId],
               completed: false,
               voiceRecognition: {
@@ -175,6 +184,95 @@ export function useSurvey() {
     initializeSession();
   }, []);
 
+  const getCookie = (name: string): string | null => {
+    const match = document.cookie.match(
+      new RegExp("(^| )" + name + "=([^;]+)")
+    );
+    return match ? match[2] : null;
+  };
+
+  const checkUser = async () => {
+    let savedToken = getCookie("access_token");
+
+    if (!savedToken) {
+      // If no access token, create a new user
+      const accessToken = await createUser();
+      if (accessToken) {
+        savedToken = accessToken;
+        // Set user ID from access token
+        let user = accessToken.split(".")[0];
+        setUserId(user); // TODO: change
+        localStorage.setItem("survey_user_id", user);
+        document.cookie = `access_token=${accessToken}; path=/; max-age=${
+          60 * 60 * 24
+        }; samesite=lax`;
+      } else {
+        console.error("Failed to create user");
+      }
+    } else {
+      // If access token exists, extract user ID
+      let user = savedToken.split(".")[0];
+      setUserId(user); // TODO: change
+      localStorage.setItem("survey_user_id", user);
+    }
+
+    return userId;
+  };
+
+  const saveUserDemographics = async () => {
+    let savedToken = getCookie("access_token");
+
+    if (!savedToken) {
+      console.error("No access token found, cannot save demographics");
+      return;
+    }
+
+    try {
+      await saveUserData(savedToken, demographics);
+      console.log("Demographics saved successfully");
+    } catch (error) {
+      console.error("Failed to save demographics:", error);
+    }
+  };
+
+  const saveAudioReview = async (audio_id: string, review: string) => {
+    let savedToken = getCookie("access_token");
+
+    if (!savedToken) {
+      console.error("No access token found, cannot save demographics");
+      return;
+    }
+
+    try {
+      await submitAudioReview(savedToken, audio_id, review);
+    } catch (error) {
+      console.error("Failed to save audio review:", error);
+    }
+  };
+
+  const saveNarratorKnowledge = async (
+    narratorId: string,
+    voiceRecognition: VoiceRecognition
+  ) => {
+    let savedToken = getCookie("access_token");
+
+    if (!savedToken) {
+      console.error("No access token found, cannot save narrator knowledge");
+      return;
+    }
+
+    try {
+      await saveUserNarratorRecognition(
+        savedToken,
+        narratorId,
+        voiceRecognition
+      );
+      console.log("Narrator knowledge saved successfully");
+    } catch (error) {
+      console.error("Failed to save narrator knowledge:", error);
+    }
+  };
+
   // Save state to localStorage whenever it changes
   useEffect(() => {
     if (userId) {
@@ -203,7 +301,7 @@ export function useSurvey() {
   };
 
   const handleDemographicsChange = (
-    field: keyof DemographicsData,
+    field: keyof DemographicsDataSurvey,
     value: string
   ) => {
     setDemographics((prev) => ({ ...prev, [field]: value }));
@@ -298,25 +396,24 @@ export function useSurvey() {
     questionId: string,
     answer: string
   ) => {
-    setAudioGroups((prev) => {
-      const newGroups = [...prev];
-      newGroups[groupIndex].questions = newGroups[groupIndex].questions.map(
-        (q) => (q.id === questionId ? { ...q, answer, answered: true } : q)
-      );
-      return newGroups;
+    saveAudioReview(questionId, answer).then(() => {
+      setAudioGroups((prev) => {
+        const newGroups = [...prev];
+        newGroups[groupIndex].questions = newGroups[groupIndex].questions.map(
+          (q) => (q.id === questionId ? { ...q, answer, answered: true } : q)
+        );
+        return newGroups;
+      });
     });
+  };
 
-    // Save the answer to the API
-    try {
-      const question = audioGroups[groupIndex].questions.find(
-        (q) => q.id === questionId
-      );
-      if (question) {
-        await saveUserReview(userId, questionId, answer);
-      }
-    } catch (error) {
-      console.error("Failed to save answer:", error);
-    }
+  const handleNextPageSurvey = async (
+    narratorId: string,
+    voiceRecognition: VoiceRecognition
+  ) => {
+    saveNarratorKnowledge(narratorId, voiceRecognition).then(() => {
+      handleNextPage();
+    });
   };
 
   const handleNextPage = async () => {
@@ -324,18 +421,18 @@ export function useSurvey() {
     try {
       if (currentPage === 2 && isDemographicsComplete(demographics)) {
         // Save demographics data
-        //await saveUserData(userId, demographics);
+        await saveUserDemographics();
       }
 
       if (currentPage === 3) {
         // Save voice recognition data
         const currentGroup = audioGroups[currentAudioGroupIndex];
         if (currentGroup.completed) {
-          await saveUserReview(
-            userId,
-            currentGroup.questions[0].narratorId,
-            JSON.stringify(currentGroup.voiceRecognition)
-          );
+          // await saveUserReview(
+          //   userId,
+          //   currentGroup.questions[0].narratorId,
+          //   JSON.stringify(currentGroup.voiceRecognition)
+          // );
         }
       }
     } catch (error) {
@@ -366,6 +463,11 @@ export function useSurvey() {
     }
   };
 
+  const submitCaptcha = async (token: string) => {
+    return await verifyCaptcha(token)
+  }
+    
+
   return {
     // State
     userId,
@@ -379,6 +481,8 @@ export function useSurvey() {
     demographics,
 
     // Actions
+    checkUser,
+    saveAudioReview,
     setCurrentPage,
     setCanHearWell,
     handleAudioPlay,
@@ -387,19 +491,7 @@ export function useSurvey() {
     playAudio,
     answerQuestion,
     handleNextPage,
+    handleNextPageSurvey,
+    submitCaptcha
   };
-}
-
-function isDemographicsComplete(demographics: DemographicsData) {
-  const required = [
-    "device",
-    "gender",
-    "education",
-    "audioWork",
-    "languageWork",
-    "syntheticSpeechFamiliarity",
-  ];
-  return required.every(
-    (field) => demographics[field as keyof DemographicsData]
-  );
 }

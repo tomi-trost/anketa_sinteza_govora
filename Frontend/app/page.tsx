@@ -1,13 +1,13 @@
-"use client"
-import { useSurvey } from "@/hooks/use-survey"
+"use client";
+import { useSurvey } from "@/hooks/use-survey";
 
-import { AlreadyCompletedPage } from "@/components/pages/already-completed-page"
-import { InstructionsPage } from "@/components/pages/instructions-page"
-import { HearingTestPage } from "@/components/pages/hearing-test-page"
-import { DemographicsPage } from "@/components/pages/demographics-page"
-import { SurveyPage } from "@/components/pages/survey-page"
-import { ThankYouPage } from "@/components/pages/thank-you-page"
-import { getProgressPercentage } from "@/lib/utils/utils"
+import { AlreadyCompletedPage } from "@/components/pages/already-completed-page";
+import { InstructionsPage } from "@/components/pages/instructions-page";
+import { HearingTestPage } from "@/components/pages/hearing-test-page";
+import { DemographicsPage } from "@/components/pages/demographics-page";
+import { SurveyPage } from "@/components/pages/survey-page";
+import { ThankYouPage } from "@/components/pages/thank-you-page";
+import { getProgressPercentage } from "@/lib/utils/utils";
 
 export default function SpeechSurvey() {
   const {
@@ -20,8 +20,9 @@ export default function SpeechSurvey() {
     currentAudioGroupIndex,
     alreadyCompleted,
     demographics,
-    
+
     // Actions
+    checkUser,
     setCurrentPage,
     setCanHearWell,
     handleAudioPlay,
@@ -30,10 +31,15 @@ export default function SpeechSurvey() {
     playAudio,
     answerQuestion,
     handleNextPage,
-  } = useSurvey()
+    handleNextPageSurvey
+  } = useSurvey();
 
   // Calculate progress percentage
-  const progressPercentage = getProgressPercentage(currentPage, currentAudioGroupIndex, audioGroups.length)
+  const progressPercentage = getProgressPercentage(
+    currentPage,
+    currentAudioGroupIndex,
+    audioGroups.length
+  );
 
   // Show loading state
   if (isLoading) {
@@ -41,12 +47,12 @@ export default function SpeechSurvey() {
       <div className="min-h-screen bg-gradient-to-br from-[#F3E7E9] to-[#E3EEFF] flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
       </div>
-    )
+    );
   }
 
   // Show already completed page if user has already taken the survey
   if (alreadyCompleted) {
-    return <AlreadyCompletedPage progressPercentage={progressPercentage} />
+    return <AlreadyCompletedPage progressPercentage={progressPercentage} />;
   }
 
   // Render the appropriate page based on current page state
@@ -55,10 +61,14 @@ export default function SpeechSurvey() {
       return (
         <InstructionsPage
           progressPercentage={progressPercentage}
-          onNext={handleNextPage}
+          onNext={() => {
+            checkUser().then(() => {
+              setCurrentPage(1);
+            });
+          }}
         />
-      )
-    
+      );
+
     case 1:
       return (
         <HearingTestPage
@@ -70,8 +80,8 @@ export default function SpeechSurvey() {
           onNext={handleNextPage}
           onBack={() => setCurrentPage(0)}
         />
-      )
-    
+      );
+
     case 2:
       return (
         <DemographicsPage
@@ -81,8 +91,8 @@ export default function SpeechSurvey() {
           onNext={handleNextPage}
           onBack={() => setCurrentPage(1)}
         />
-      )
-    
+      );
+
     case 3:
       return (
         <SurveyPage
@@ -93,14 +103,19 @@ export default function SpeechSurvey() {
           onPlayAudio={playAudio}
           onAnswerQuestion={answerQuestion}
           onVoiceRecognitionChange={handleVoiceRecognitionChange}
+          onNext={handleNextPageSurvey}
+        />
+      );
+
+    case 4:
+      return <ThankYouPage progressPercentage={progressPercentage} />;
+
+    default:
+      return (
+        <InstructionsPage
+          progressPercentage={progressPercentage}
           onNext={handleNextPage}
         />
-      )
-    
-    case 4:
-      return <ThankYouPage progressPercentage={progressPercentage} />
-    
-    default:
-      return <InstructionsPage progressPercentage={progressPercentage} onNext={handleNextPage} />
+      );
   }
 }

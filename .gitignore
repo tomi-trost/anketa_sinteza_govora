@@ -1,3 +1,7 @@
 .venv/
 .env
 backend/static_audio
+
+frontend/.next
+frontend/audio_files
+frontend/node_modules

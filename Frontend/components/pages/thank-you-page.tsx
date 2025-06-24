@@ -8,7 +8,7 @@ interface ThankYouPageProps {
 export function ThankYouPage({ progressPercentage }: ThankYouPageProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F3E7E9] to-[#E3EEFF] flex items-center justify-center p-4">
-      <Card className="w-full max-w-3xl bg-white overflow-hidden">
+      <Card className="w-full sm:max-w-5xl 2xl:max-w-6xl bg-white overflow-hidden">
         <ProgressBar percentage={progressPercentage} />
         <CardContent className="p-8">
           <div className="space-y-6 text-center">

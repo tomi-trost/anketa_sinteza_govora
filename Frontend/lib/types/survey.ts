@@ -1,16 +1,44 @@
-export interface DemographicsData {
-  device: string
-  gender: string
-  education: string
-  audioWork: string
-  audioWorkDetails: string
-  audioWorkOther: string
-  languageWork: string
-  languageWorkDetails: string
-  syntheticSpeechFamiliarity: string
-  syntheticSpeechExperience: string
-  syntheticSpeechExperienceOther: string
+
+
+export interface DemographicsDataSurvey {
+  email?: string,
+  device_lable: string,
+  device_other_input?: string,
+  gender: string,
+  age?: number,
+  education: string,
+  media_experience: string,
+  media_role: string,
+  media_other_input?: string,
+  speach_experience: string,
+  speach_role: string,
+  speach_other_role?: string,
+  synthetic_speach_experience: string,
+  synthetic_speach_role: string,
+  synthetic_speach_other_role?: string
 }
+
+export interface UserData {
+  email?: string,
+  device_lable: string,
+  device_other_input?: string,
+  gender: string,
+  age?: number,
+  education: string,
+  media_experience: boolean,
+  media_role: string,
+  media_other_input?: string,
+  speach_experience: boolean,
+  speach_role: string,
+  speach_other_role?: string,
+  synthetic_speach_experience: boolean,
+  synthetic_speach_role: string,
+  synthetic_speach_other_role?: string
+}
+
+
+
+
 
 export interface AudioQuestion {
   id: string
@@ -27,12 +55,12 @@ export interface AudioQuestion {
 
 export interface VoiceRecognition {
   recognized: string
-  speakerName: string
-  comment: string
+  speakerName?: string
+  comment?: string
 }
 
 export interface AudioGroup {
-  id: number
+  id: string
   title: string
   questions: AudioQuestion[]
   completed: boolean
@@ -42,7 +70,15 @@ export interface AudioGroup {
 export interface SurveyState {
   currentPage: number
   canHearWell: boolean
-  demographics: DemographicsData
+  demographics: DemographicsDataSurvey
   audioGroups: AudioGroup[]
   currentAudioGroupIndex: number
+}
+
+export interface AudioFile {
+  type: "human" | "synthetic",
+  narrator_id: string,
+  code: string,
+  file_path: string,
+  id: string
 }

@@ -6,6 +6,11 @@ export const metadata: Metadata = {
   title: 'Raziskava o Razpoznavanju Sintetiziranega Govora',
   description: '',
   generator: '',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+  }
+  
 }
 
 const montserrat = Montserrat({
