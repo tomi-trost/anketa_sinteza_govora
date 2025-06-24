@@ -2,3 +2,7 @@
 .env
 backend/static_audio
 backend/exports
+
+frontend/.next
+frontend/audio_files
+frontend/node_modules
