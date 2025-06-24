@@ -8,6 +8,7 @@ from app.models.narrator import (
     UserKnowsNarrator,
     UserKnowsNarratorCreate,
     UserKnowsNarratorUpdate,
+    NarratorName,
 )
 
 
@@ -23,6 +24,15 @@ def create_narrator(session: Session, narrator_create: NarratorCreate) -> Narrat
 
 def get_narrator(session: Session, narrator_id: UUID) -> Optional[Narrator]:
     return session.get(Narrator, narrator_id)
+
+
+def get_narrator_by_name(session: Session, name: NarratorName) -> Optional[Narrator]:
+    statement = select(Narrator).where(Narrator.name == name)
+    return session.exec(statement).first()
+
+
+def get_all_narrators(session: Session):
+    return session.exec(select(Narrator)).all()
 
 
 def update_narrator(session: Session, narrator_id: UUID, narrator_update: NarratorCreate) -> Optional[Narrator]:
