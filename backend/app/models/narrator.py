@@ -45,8 +45,8 @@ class Narrator(NarratorBase, table=True):
 
 class KnowsNarratorLabel(str, enum.Enum):
     ne_poznam = "Glasu ne poznam"
-    poznam_glas = "Glas govorca poznam iz medijev ne vem pa kdo je"
-    poznam_kdo = "Govorca ne poznam osebno vem pa kdo je"
+    poznam_glas = "Glas govorca poznam iz medijev, ne vem pa, kdo je"
+    poznam_kdo = "Govorca ne poznam osebno, vem pa, kdo je"
     osebno_poznam = "Govorca osebno poznam"
 
 # ----------------------------------s
@@ -54,6 +54,7 @@ class KnowsNarratorLabel(str, enum.Enum):
 class UserKnowsNarratorBase(SQLModel):
     knows_narrator_lable: KnowsNarratorLabel
     narrator_prediction: Optional[str] = None
+    comment: Optional[str] = None
 
 
 class UserKnowsNarratorIn(UserKnowsNarratorBase):
@@ -68,6 +69,7 @@ class UserKnowsNarratorCreate(UserKnowsNarratorBase):
 class UserKnowsNarratorUpdate(SQLModel):
     knows_narrator_lable: Optional[KnowsNarratorLabel] = None
     narrator_prediction: Optional[str] = None
+    comment: Optional[str] = None
 
 
 class UserKnowsNarratorOut(UserKnowsNarratorBase):

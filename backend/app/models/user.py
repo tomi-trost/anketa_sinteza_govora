@@ -5,7 +5,6 @@ import enum
 from datetime import datetime, timezone
 
 
-
 if TYPE_CHECKING:
     # only for type hints, not executed at runtime (avoids circular import)
     from .narrator import UserKnowsNarrator
@@ -21,14 +20,26 @@ class Gender(str, enum.Enum):
     drugo = "ne želim se opredeliti"
 
 
+class Education(str, enum.Enum):
+    osnovnosolska = "osnovnošolska"
+    srednjesolska = "srednješolska"
+    visjesolska = "višješolska"
+    visokosolska = "visokošolska (1. bolonjska stopnja)"
+    univerzitetna = "univerzitetna (2. bolonjska stopnja)"
+    magisterij = "magisterij znanosti"
+    doktorat = "doktorat znanosti"
+    drugo = "drugo"
+
+
 class DeviceLabel(str, enum.Enum):
-    namizni = "namizni_računalnik_z ločenimi zvočniki"
+    namizni = "namizni računalnik z ločenimi zvočniki"
     prenosni = "prenosni računalnik z vgrajenimi zvočniki"
     tablica = "tablica"
     telefon = "telefon"
     slusalke = "slušalke"
     bluetooth_zvocnik = "prenosni bluetooth zvočnik"
     zvocni_sistem = "visokokakovosten zvočni sistem"
+    drugo = "drugo"
 
 
 class MediaRole(str, enum.Enum):
@@ -39,9 +50,11 @@ class MediaRole(str, enum.Enum):
     snemalec = "snemalec slike, direktor fotografije, montažer"
     reziser = "režiser, realizator, producent"
     glasbenik = "glasbenik, glasbeni producent"
+    drugo = "drugo"
 
 
 class SpeachRole(str, enum.Enum):
+    govorec = "govorec, napovedovalec, voditelj"
     novinar = "novinar podkaster vplivnež"
     igralec = "igralec, pripovedovalec, animator, improvizator, standup komik"
     trener = "trener govora ali javnega nastopanja"
@@ -64,13 +77,14 @@ class SyntheticSpeachRole(str, enum.Enum):
 # --------------------------------
 
 class UserBase(SQLModel):
-    ip: str
-    mac: str
+    # ip: str
+    # mac: str
     email: Optional[str] = None
 
     gender: Optional[Gender] = None
     age: Optional[int] = None
-    education: Optional[str] = None
+    education: Optional[Education] = None
+    education_other_input: Optional[str] = None
 
     device_lable: Optional[DeviceLabel] = None
     device_other_input: Optional[str] = None 
@@ -100,7 +114,8 @@ class UserUpdate(SQLModel):
 
     gender: Optional[Gender] = None
     age: Optional[int] = None
-    education: Optional[str] = None
+    education: Optional[Education] = None
+    education_other_input: Optional[str] = None
 
     media_experience: Optional[bool] = None
     media_role: Optional[MediaRole] = None
