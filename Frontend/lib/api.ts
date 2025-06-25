@@ -13,12 +13,10 @@ import {
 } from "./types/survey";
 // import axios, { AxiosError } from "axios";
 // Define the base URL for the API
-const API_URL = "http://localhost:8000";
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
-const API_AUTH =
-  process.env.NEXT_PUBLIC_API_AUTH ||
-  "http://localhost:8000/api/v1/auth/device";
+const base = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_URL = base;
+const API_BASE_URL = `${base}/api/v1`;
+const API_AUTH = `${base}/api/v1/auth/device`;
 
 export async function createUser(): Promise<string> {
   // const randomIp = `192.168.${Math.floor(Math.random() * 256)}.${Math.floor(
@@ -314,7 +312,7 @@ export const getTestAudioFile = async () => {
   if (!response.ok) {
     throw new Error(`API error: ${response.status}`);
   }
-
+  console.log("Response from test audio file:", response);
   const data = await response.json();
 
   const audioFilePath = data.file_path;

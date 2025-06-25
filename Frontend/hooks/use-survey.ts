@@ -4,23 +4,21 @@ import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   saveUserData,
-  saveUserReview,
   getAudioFiles,
   createUser,
   submitAudioReview,
   saveUserNarratorRecognition,
   verifyCaptcha,
   getTestAudioFile,
-  // checkUserExists,
 } from "@/lib/api";
 import {
   AudioGroup,
   DemographicsDataSurvey,
-  AudioQuestion,
   VoiceRecognition,
 } from "@/lib/types/survey";
-import { cookies } from "next/dist/server/request/cookies";
 import { isDemographicsComplete } from "@/lib/utils/utils";
+import debounce from "lodash/debounce";
+import { useMemo } from "react";
 
 export function useSurvey() {
   const [userId, setUserId] = useState<string>("");
@@ -273,11 +271,12 @@ export function useSurvey() {
       setTestAudio(testAudio);
     }
     setIsPlaying(true);
+    console.log("Playing test audio:", testAudio);
     const audioElement = new Audio(testAudio || "");
     audioElement.play().catch((error) => {
       console.error("Audio playback failed:", error);
       setIsPlaying(false);
-    })
+    });
     audioElement.addEventListener("ended", () => {
       setIsPlaying(false);
     });
@@ -289,6 +288,16 @@ export function useSurvey() {
   ) => {
     setDemographics((prev) => ({ ...prev, [field]: value }));
   };
+
+  const debouncedHandleChange = useMemo(
+    () =>
+      debounce(
+        (field: keyof DemographicsDataSurvey, value: string) =>
+          handleDemographicsChange(field, value),
+        200 // debounce delay in ms
+      ),
+    []
+  );
 
   const handleVoiceRecognitionChange = (
     field: keyof VoiceRecognition,
@@ -447,9 +456,8 @@ export function useSurvey() {
   };
 
   const submitCaptcha = async (token: string) => {
-    return await verifyCaptcha(token)
-  }
-    
+    return await verifyCaptcha(token);
+  };
 
   return {
     // State
@@ -469,12 +477,12 @@ export function useSurvey() {
     setCurrentPage,
     setCanHearWell,
     handleTestAudioPlay,
-    handleDemographicsChange,
+    debouncedHandleChange,
     handleVoiceRecognitionChange,
     playAudio,
     answerQuestion,
     handleNextPage,
     handleNextPageSurvey,
-    submitCaptcha
+    submitCaptcha,
   };
 }

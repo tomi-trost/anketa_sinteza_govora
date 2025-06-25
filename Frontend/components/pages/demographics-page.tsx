@@ -88,7 +88,7 @@ export function DemographicsPage({
                       Vpišite napravo:
                     </Label>
                     <Input
-                      value={demographics.device_other_input}
+                      // value={demographics.device_other_input}
                       onChange={(e) =>
                         onDemographicsChange(
                           "device_other_input",
@@ -271,7 +271,7 @@ export function DemographicsPage({
                       {demographics.media_role === "drugo" && (
                         <div className="pl-6">
                           <Input
-                            value={demographics.media_other_input}
+                            // value={demographics.media_other_input}
                             onChange={(e) =>
                               onDemographicsChange("media_other_input", e.target.value)
                             }
@@ -421,7 +421,7 @@ export function DemographicsPage({
                       {demographics.speach_role === "drugo" && (
                         <div className="pl-6">
                           <Input
-                            value={demographics.speach_other_role}
+                            // value={demographics.speach_other_role}
                             onChange={(e) =>
                               onDemographicsChange(
                                 "speach_other_role",
@@ -523,7 +523,7 @@ export function DemographicsPage({
                       {demographics.synthetic_speach_role === "drugo" && (
                         <div className="pl-6 pb-6">
                           <Input
-                            value={demographics.synthetic_speach_other_role}
+                            // value={demographics.synthetic_speach_other_role}
                             onChange={(e) =>
                               onDemographicsChange(
                                 "synthetic_speach_other_role",

@@ -77,31 +77,39 @@ services:
       - traefik.http.routers.${STACK_NAME?Variable not set}-adminer-https.tls.certresolver=le
       - traefik.http.services.${STACK_NAME?Variable not set}-adminer.loadbalancer.server.port=8080
 
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #   image: ${DOCKER_IMAGE_FRONTEND}
-    # networks:
-    #     - traefik-public
-    #     - default
-  #   env_file: .env
-  #   labels:
-    # - traefik.enable=true
-    # - traefik.docker.network=traefik-public
-    # - traefik.constraint-label=traefik-public
+  frontend:
+    build:
+      context: ./frontend
+    image: ${DOCKER_IMAGE_FRONTEND}
+    ports:
+      - "3000:3000"
+    networks:
+        - traefik-public
+        - default
+    #volumes:
+    #  - /app/node_modules  # Prevents local node_modules from overwriting container's
+    # command: yarn dev
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+    env_file: .env
+    labels:
+    - traefik.enable=true
+    - traefik.docker.network=traefik-public
+    - traefik.constraint-label=traefik-public
 
-    # - traefik.http.services.${STACK_NAME?Variable not set}-frontend.loadbalancer.server.port=5173
+    - traefik.http.services.${STACK_NAME?Variable not set}-frontend.loadbalancer.server.port=5173
 
-    # - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=Host(`dashboard.${DOMAIN?Variable not set}`)
-    # - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.entrypoints=http
+    - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=Host(`dashboard.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.entrypoints=http
 
-    # - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.rule=Host(`dashboard.${DOMAIN?Variable not set}`)
-    # - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.entrypoints=https
-    # - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.tls=true
-    # - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.tls.certresolver=le
+    - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.rule=Host(`dashboard.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.entrypoints=https
+    - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.tls=true
+    - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.tls.certresolver=le
 
-    # # Enable redirection for HTTP and HTTPS
-    # - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.middlewares=https-redirect
+    # Enable redirection for HTTP and HTTPS
+    - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.middlewares=https-redirect
 
 volumes:
   pgdata:

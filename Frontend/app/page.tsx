@@ -26,7 +26,7 @@ export default function SpeechSurvey() {
     setCurrentPage,
     setCanHearWell,
     handleTestAudioPlay,
-    handleDemographicsChange,
+    debouncedHandleChange,
     handleVoiceRecognitionChange,
     playAudio,
     answerQuestion,
@@ -87,7 +87,7 @@ export default function SpeechSurvey() {
         <DemographicsPage
           progressPercentage={progressPercentage}
           demographics={demographics}
-          onDemographicsChange={handleDemographicsChange}
+          onDemographicsChange={debouncedHandleChange}
           onNext={handleNextPage}
           onBack={() => setCurrentPage(1)}
         />
