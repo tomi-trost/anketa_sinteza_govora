@@ -21,6 +21,8 @@ services:
     networks:
       - traefik-public
       - default
+    volumes:
+      - ./backend/exports:/app/exports
     env_file: .env
     labels:
       - traefik.enable=true
