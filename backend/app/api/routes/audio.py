@@ -25,19 +25,19 @@ def list_audio_files(session: SessionDep):
     audio_order_codes = {
         "Klemen": [
             "K6N", "K2S", "K3SS", "K3NN", "K10N", "K3S", "K1S", "K2N", "K7S", "K8S", "K9N", "K10S",
-            "K5S", "K1N", "K7N", "K9S", "K4S", "K3SS", "K3N", "K8N", "K4N", "K6S", "K5N", "K3NN"
+            "K5S", "K1N", "K7N", "K9S", "K4S", "K3SSD", "K3N", "K8N", "K4N", "K6S", "K5N", "K3NND"
         ],
         "Nataša": [
             "N3SS", "N6S", "N1N", "N7N", "N3S", "N8N", "N5N", "N1S", "N9S", "N7S", "N2N", "N3NN",
-            "N3SS", "N8S", "N2S", "N10N", "N3NN", "N5S", "N3N", "N4S", "N10S", "N9N", "N6N", "N4N"
+            "N3SSD", "N8S", "N2S", "N10N", "N3NND", "N5S", "N3N", "N4S", "N10S", "N9N", "N6N", "N4N"
         ],
         "Jure": [
             "J6N", "J3S", "J8N", "J3SS", "J9S", "J4N", "J7S", "J3NN", "J2S", "J5N", "J1N", "J10S",
-            "J6S", "J1S", "J7N", "J10N", "J3SS", "J2N", "J4S", "J3N", "J9N", "J5S", "J8S", "J3NN"
+            "J6S", "J1S", "J7N", "J10N", "J3SSD", "J2N", "J4S", "J3N", "J9N", "J5S", "J8S", "J3NND"
         ],
         "Žiga": [
             "Z1N", "Z10N", "Z2S", "Z6S", "Z9N", "Z5N", "Z3NN", "Z3SS", "Z8S", "Z4S", "Z2N", "Z9S",
-            "Z1S", "Z3N", "Z6N", "Z3NN", "Z7S", "Z4S", "Z10S", "Z8N", "Z5S", "Z3S", "Z3SS", "Z4N"
+            "Z1S", "Z3N", "Z6N", "Z3NND", "Z7S", "Z4S", "Z10S", "Z8N", "Z5S", "Z3S", "Z3SSD", "Z4N"
         ]
     }
 
