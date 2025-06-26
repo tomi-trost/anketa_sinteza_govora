@@ -10,6 +10,7 @@ import {
   saveUserNarratorRecognition,
   verifyCaptcha,
   getTestAudioFile,
+  submitEmail,
 } from "@/lib/api";
 import {
   AudioGroup,
@@ -30,6 +31,7 @@ export function useSurvey() {
   const [testAudio, setTestAudio] = useState<string | null>(null);
   const [currentAudioGroupIndex, setCurrentAudioGroupIndex] = useState(0);
   const [alreadyCompleted, setAlreadyCompleted] = useState(false);
+  const [mailSubmitted, setMailIsSubmitted] = useState(false);
 
   const [demographics, setDemographics] = useState<DemographicsDataSurvey>({
     device_lable: "",
@@ -55,16 +57,6 @@ export function useSurvey() {
       setIsLoading(true);
 
       try {
-        // Check if user has already completed the survey based on IP/MAC
-        // const userExistsCheck = await checkUserExists();
-
-        // if (userExistsCheck.exists) {
-        //   // User has already completed the survey
-        //   setAlreadyCompleted(true);
-        //   setIsLoading(false);
-        //   return;
-        // }
-
         // Check for existing user ID in localStorage
         let userIdFromStorage = localStorage.getItem("survey_user_id");
 
@@ -90,6 +82,13 @@ export function useSurvey() {
               setCurrentAudioGroupIndex(state.currentAudioGroupIndex);
             }
           }
+        }
+
+        // check if mail was already submitted
+        const savedEmail = localStorage.getItem("survey_email");
+        if (savedEmail) {
+          setMailIsSubmitted(true);
+          // setDemographics((prev) => ({ ...prev, email: savedEmail }));
         }
 
         // Load audio files from API
@@ -239,6 +238,26 @@ export function useSurvey() {
       console.error("Failed to save narrator knowledge:", error);
     }
   };
+
+
+  const submitMail = async (email: string) => {
+    let savedToken = getCookie("access_token");
+
+    if (!savedToken) {
+      console.error("No access token found, cannot submit email");
+      return;
+    }
+
+    try {
+      await submitEmail(savedToken, email);
+      setMailIsSubmitted(true);
+      debouncedHandleChange("email", email);
+      localStorage.setItem("survey_email", email);
+      console.log("Email submitted successfully");
+    } catch (error) {
+      console.error("Failed to submit email:", error);
+    }
+  }
 
   // Save state to localStorage whenever it changes
   useEffect(() => {
@@ -470,6 +489,7 @@ export function useSurvey() {
     currentAudioGroupIndex,
     alreadyCompleted,
     demographics,
+    mailSubmitted,
 
     // Actions
     checkUser,
@@ -484,5 +504,6 @@ export function useSurvey() {
     handleNextPage,
     handleNextPageSurvey,
     submitCaptcha,
+    submitMail
   };
 }

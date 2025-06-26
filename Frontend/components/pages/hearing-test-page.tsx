@@ -76,7 +76,7 @@ export function HearingTestPage({
                 </p>
               </div>
             </Card>
-            <p className="text-sm text-gray-600 text-start w-full sm:pt-2">
+            <p className=" text-gray-600 text-start w-full sm:pt-2">
               Ko ste prepričani, da dobro slišite,{" "}
               <strong>odkljukajte DOBRO SLIŠIM ter kliknite NADALJUJ</strong>
             </p>

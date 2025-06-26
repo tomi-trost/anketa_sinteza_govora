@@ -88,19 +88,17 @@ services:
     networks:
         - traefik-public
         - default
-    #volumes:
-    #  - /app/node_modules  # Prevents local node_modules from overwriting container's
-    # command: yarn dev
     environment:
-      - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://backend:8000
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=https://api.${DOMAIN}
     env_file: .env
     labels:
     - traefik.enable=true
     - traefik.docker.network=traefik-public
     - traefik.constraint-label=traefik-public
 
-    - traefik.http.services.${STACK_NAME?Variable not set}-frontend.loadbalancer.server.port=5173
+    # Fixed port to match Next.js app
+    - traefik.http.services.${STACK_NAME?Variable not set}-frontend.loadbalancer.server.port=3000
 
     - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=Host(`dashboard.${DOMAIN?Variable not set}`)
     - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.entrypoints=http
@@ -112,6 +110,8 @@ services:
 
     # Enable redirection for HTTP and HTTPS
     - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.middlewares=https-redirect
+    depends_on:
+      - backend
 
 volumes:
   pgdata:

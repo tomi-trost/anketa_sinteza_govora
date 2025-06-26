@@ -51,7 +51,7 @@ export function DemographicsPage({
               {/* Device Question - Changed to dropdown */}
               <div className="space-y-3 px-3">
                 <Label className="text-sm font-medium">
-                  S katero napravo poslušate?
+                  Na kakšni napravi poslušate?
                 </Label>
                 <Select
                   value={demographics.device_lable}
@@ -64,22 +64,22 @@ export function DemographicsPage({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="namizni računalnik z ločenimi zvočniki">
-                      namizni računalnik z ločenimi zvočniki
+                      Namizni računalnik z ločenimi zvočniki
                     </SelectItem>
                     <SelectItem value="prenosni računalnik z vgrajenimi zvočniki">
-                      prenosni računalnik z vgrajenimi zvočniki
+                      Prenosni računalnik z vgrajenimi zvočniki
                     </SelectItem>
-                    <SelectItem value="tablica">tablica</SelectItem>
-                    <SelectItem value="telefon">telefon</SelectItem>
+                    <SelectItem value="tablica">Tablica</SelectItem>
+                    <SelectItem value="telefon">Telefon</SelectItem>
 
                     <SelectItem value="prenosni bluetooth zvočnik">
-                      prenosni bluetooth zvočnik
+                      Prenosni bluetooth zvočnik
                     </SelectItem>
-                    <SelectItem value="slušalke">slušalke</SelectItem>
+                    <SelectItem value="slušalke">Slušalke</SelectItem>
                     <SelectItem value="visokokakovosten zvočni sistem">
-                      visokokakovosten zvočni
+                      Visokokakovosten zvočni
                     </SelectItem>
-                    <SelectItem value="drugo">drugo (vpiši):</SelectItem>
+                    <SelectItem value="drugo">Drugo (vpiši):</SelectItem>
                   </SelectContent>
                 </Select>
                 {demographics.device_lable === "drugo" && (

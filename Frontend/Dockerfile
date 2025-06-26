@@ -25,7 +25,6 @@ RUN yarn install --production --frozen-lockfile
 
 # Copy built output and public assets from the builder stage
 COPY --from=nextjs-builder /app/public ./public
-COPY --from=nextjs-builder /app/.next ./.next
 COPY --from=nextjs-builder /app/next.config.mjs ./
 COPY --from=nextjs-builder /app/package.json ./package.json
 

@@ -138,7 +138,7 @@ export function SurveyPage({
                         </div>
                         {/* Display answer on the right side when answered */}
                         {question.answered && (
-                          <div className="text-green-600 font-medium text-sm text-right w-20 sm:w-40">
+                          <div className="text-green-600 font-medium text-sm xl:text-base text-right w-20 sm:w-40 xl:w-60">
                             {getAnswerDisplayText(question.answer)}
                           </div>
                         )}
@@ -232,7 +232,7 @@ export function SurveyPage({
 
               {/* Additional questions after all audio questions are answered */}
               {
-                // allQuestionsAnswered && (
+                allQuestionsAnswered && (
                 <div className="space-y-6 mt-8 border-t pt-6">
                   <div className="space-y-3">
                     <Label className="font-medium">
@@ -342,13 +342,13 @@ export function SurveyPage({
                     />
                   </div>
                 </div>
-              }
+              )}
             </div>
 
-            <div className="flex justify-end pt-2">
+            <div className="flex justify-end">
               <Button
                 onClick={() => onNext(currentGroup.questions[0].narratorId, currentGroup.voiceRecognition)}
-                disabled={false} // !allQuestionsAnswered || !currentGroup.voiceRecognition.recognized}
+                disabled={!currentGroup.voiceRecognition.recognized}  // !allQuestionsAnswered || !currentGroup.voiceRecognition.recognized
                 className="bg-black text-white hover:bg-gray-800"
               >
                 NADALJUJ

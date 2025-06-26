@@ -50,29 +50,6 @@ export async function createUser(): Promise<string> {
   }
 }
 
-// // Check if user already exists based on IP/MAC
-// export async function checkUserExists(): Promise<{ exists: boolean }> {
-//   try {
-//     // Get client IP address from the server
-//     const response = await fetch(`${API_BASE_URL}/check-user-exists`, {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     })
-
-//     if (!response.ok) {
-//       throw new Error(`API error: ${response.status}`)
-//     }
-
-//     return await response.json()
-//   } catch (error) {
-//     console.error("Error checking if user exists:", error)
-//     // Default to false if there's an error to allow the user to continue
-//     return { exists: false }
-//   }
-// }
-
 // Save user demographic data
 export async function saveUserData(
   access_token: string,
@@ -80,7 +57,6 @@ export async function saveUserData(
 ): Promise<any> {
   try {
     const userData: UserData = {
-      email: data.email,
       device_lable: data.device_lable,
       device_other_input:
         data.device_other_input == "" ? null : data.device_other_input,
@@ -103,25 +79,6 @@ export async function saveUserData(
           ? null
           : data.synthetic_speach_other_role,
     };
-
-    // let user = {
-    //   email: "string",
-    //   device_lable: "namizni_računalnik_z ločenimi zvočniki",
-    //   device_other_input: "string",
-    //   gender: "moški",
-    //   age: 0,
-    //   education: "string",
-    //   media_experience: true,
-    //   media_role: "govorec, napovedovalec, voditelj, igralec",
-    //   media_other_input: "string",
-    //   speach_experience: true,
-    //   speach_role: "novinar podkaster vplivnež",
-    //   speach_other_role: "string",
-    //   synthetic_speach_experience: true,
-    //   synthetic_speach_role:
-    //     "Pri produkciji avdio ali avdiovizualnih vsebin sem že kdaj uporabil sintetizirani govor",
-    //   synthetic_speach_other_role: "string",
-    // };
 
     console.log("Saving user data:", userData);
     // console.log("acces token", access_token)
@@ -264,7 +221,7 @@ export async function getAudioFiles(): Promise<AudioGroup[]> {
 
     for (const [narratorId, files] of Object.entries(audioFiles)) {
       groupedAudio[narratorId] = files.map((file, index) => ({
-        id: file.id,
+        id: file.id, // file.code -> to fix the issue with duplicate IDs, TODO
         audioUrl: API_URL + file.file_path,
         text: `Posnetek ${index + 1}`,
         played: false,
@@ -280,7 +237,7 @@ export async function getAudioFiles(): Promise<AudioGroup[]> {
     // Convert to array of audio groups
     const groups: AudioGroup[] = Object.keys(groupedAudio).map(
       (narratorId, index) => ({
-        id: groupedAudio[narratorId][0].id,
+        id: groupedAudio[narratorId][0].narratorId,
         title: `Glas ${index + 1} od 4`,
         questions: groupedAudio[narratorId],
         completed: false,
@@ -346,6 +303,37 @@ export const submitAudioReview = async (
     return await response.json();
   } catch (error) {
     console.error("Error submitting audio review:", error);
+    throw error;
+  }
+};
+
+export const submitEmail = async (
+  access_token: string,
+  email: string
+): Promise<any> => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/questions/register-question`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
+        },
+        body: JSON.stringify({ email: email }),
+      }
+    );
+
+    if (!response.ok) {
+      if (response.status === 403) {
+        console.log("403 error: ", response.statusText);
+      }
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error saving user data:", error);
     throw error;
   }
 };

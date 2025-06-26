@@ -30,7 +30,31 @@ export const isDemographicsComplete = (
     "speach_experience",
     "synthetic_speach_experience",
   ];
-  return required.every((field) => demographics[field]);
+
+  // Check if all basic required fields are filled
+  const basicFieldsComplete = required.every((field) => demographics[field]);
+  
+  if (!basicFieldsComplete) {
+    return false;
+  }
+
+  // Check conditional required fields
+  const conditionalFields = [
+    { condition: "media_experience", role: "media_role" },
+    { condition: "speach_experience", role: "speach_role" },
+    { condition: "synthetic_speach_experience", role: "synthetic_speach_role" }
+  ];
+
+  const conditionalFieldsComplete = conditionalFields.every(({ condition, role }) => {
+    // If the experience field is true, then the corresponding role field must be filled
+    if (demographics[condition as keyof DemographicsDataSurvey] === "yes") {
+      return demographics[role as keyof DemographicsDataSurvey];
+    }
+    // If experience is false or not set, role field is not required
+    return true;
+  });
+
+  return conditionalFieldsComplete;
 };
 
 export const getProgressPercentage = (
