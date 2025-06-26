@@ -21,6 +21,17 @@ enum_maps = {
     "audio_review": {e.value: i + 1 for i, e in enumerate(AudioReview)}
 }
 
+def export_enum_mapping_to_csv(mapping_path="answer_mapping.csv"):
+    with open(mapping_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["field", "value", "mapped_number"])
+        for field, value_map in enum_maps.items():
+            for val, num in value_map.items():
+                writer.writerow([field, val, num])
+            writer.writerow([])
+
+    print(f"📄 Enum mapping export successful: {mapping_path}")
+
 def sort_key(code):
     match = re.match(r"([A-Za-z]+)(\d+)([A-Za-z]*)", code)
     if match:
@@ -106,3 +117,4 @@ def export_users_to_csv(output_path="survey_export.csv"):
 
 if __name__ == "__main__":
     export_users_to_csv(output_path="/app/exports/survey_export.csv")
+    export_enum_mapping_to_csv(mapping_path="/app/exports/answer_mapping.csv")

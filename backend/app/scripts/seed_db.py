@@ -55,7 +55,7 @@ def seed_audio_files(session: Session):
             code = filename.split("-")[0].strip()
             file_path = f"/audio/{narrator_folder.name}/{filename}"
             audio_type = AudioType.synthetic if code.endswith("S") else AudioType.human
-
+            
             audio_in = AudioFileCreate(
                 type=audio_type,
                 narrator_id=narrator_obj.id,
@@ -63,6 +63,16 @@ def seed_audio_files(session: Session):
                 file_path=file_path,
             )
             create_audio_file(session, audio_in)
+
+            # Adds placebos into the database
+            if code.endswith("SS") or code.endswith("NN"):
+                audio_in = AudioFileCreate(
+                    type=audio_type,
+                    narrator_id=narrator_obj.id,
+                    code=code+"D",
+                    file_path=file_path,
+                )
+                create_audio_file(session, audio_in)
 
     print("Audio files seeded.")
 
