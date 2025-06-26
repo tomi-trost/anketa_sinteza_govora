@@ -9,6 +9,57 @@ from app.models.user import Gender, Education, DeviceLabel, MediaRole, SpeachRol
 from app.models.narrator import KnowsNarratorLabel, Narrator
 from app.models.audio_file import AudioReview
 
+question_maps = {
+    "id": "Identifikator uporabnika (ni vprašanje, dodeljen avtomatsko)",
+    "created_at": "Datum in čas izpolnjevanja (ni vprašanje, beleži se avtomatsko)",
+    "email": "Če želite, lahko vpišete svoj e-naslov in poslali vam bomo rezultate raziskave.",
+
+    "gender": "Spol",
+    "age": "Starost: ________ let (vpiši)",
+
+    "education": "Izobrazba:",
+    "education_other_input": "drugo (vpiši): [v okviru vprašanja o izobrazbi]",
+
+    "device_lable": "Na kakšni napravi poslušate?",
+    "device_other_input": "drugo (vpiši): [v okviru vprašanja o napravi za poslušanje]",
+
+    "media_experience": "Ali se poklicno ukvarjate z elektronskimi mediji, z avdio ali avdiovizualno produkcijo?",
+    "media_role": "če DA: Kakšna je vaša vloga v elektronskih medijih?",
+    "media_other_input": "drugo (vpiši): [v okviru vprašanja o vlogi v medijih]",
+
+    "speach_experience": "Ali se poklicno ukvarjate z govorom, z glasom ali z jezikom oziroma jih pri delu izrazito uporabljate?",
+    "speach_role": "če DA: Kateri je vaš poklic, ki vključuje govor, glas ali jezik?",
+    "speach_other_role": "drugo (vpiši): [v okviru vprašanja o poklicu, povezanem z govorom]",
+
+    "synthetic_speach_experience": "Ali imate izkušnje na področju sintetiziranega govora?",
+    "synthetic_speach_role": "če DA: Kakšne izkušnje imate s sintetiziranim govorom?",
+    "synthetic_speach_other_role": "drugo (vpiši): [v okviru vprašanja o izkušnjah s sintetiziranim govorom]",
+
+    "Jure_knows_narrator_lable": "Ali ste prepoznali glas govorca na posnetku? [GLAS 3 - JURE]",
+    "Klemen_knows_narrator_lable": "Ali ste prepoznali glas govorca na posnetku? [GLAS 1 - KLEMEN]",
+    "Nataša_knows_narrator_lable": "Ali ste prepoznali glas govorca na posnetku? [GLAS 2 - NATAŠA]",
+    "Žiga_knows_narrator_lable": "Ali ste prepoznali glas govorca na posnetku? [GLAS 4 - ŽIGA]",
+
+    "Jure_narrator_prediction": "Kdo je govorec? Vpiši ime (če ga poznate) [GLAS 3 - JURE]",
+    "Klemen_narrator_prediction": "Kdo je govorec? Vpiši ime (če ga poznate) [GLAS 1 - KLEMEN]",
+    "Nataša_narrator_prediction": "Kdo je govorec? Vpiši ime (če ga poznate) [GLAS 2 - NATAŠA]",
+    "Žiga_narrator_prediction": "Kdo je govorec? Vpiši ime (če ga poznate) [GLAS 4 - ŽIGA]",
+
+    "Jure_comment": "Morebitni komentar po poslušanju [GLAS 3 - JURE]",
+    "Klemen_comment": "Morebitni komentar po poslušanju [GLAS 1 - KLEMEN]",
+    "Nataša_comment": "Morebitni komentar po poslušanju [GLAS 2 - NATAŠA]",
+    "Žiga_comment": "Morebitni komentar po poslušanju [GLAS 4 - ŽIGA]",
+}
+
+def export_question_mapping_to_csv(mapping_path="question_mapping.csv"):
+    with open(mapping_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["field", "question_text"])
+        for field, question in question_maps.items():
+            writer.writerow([field, question])
+    print(f"📄 Question mapping export successful: {mapping_path}")
+
+
 # Create value-to-index maps for enums
 enum_maps = {
     "gender": {e.value: i + 1 for i, e in enumerate(Gender)},
@@ -118,3 +169,4 @@ def export_users_to_csv(output_path="survey_export.csv"):
 if __name__ == "__main__":
     export_users_to_csv(output_path="/app/exports/survey_export.csv")
     export_enum_mapping_to_csv(mapping_path="/app/exports/answer_mapping.csv")
+    export_question_mapping_to_csv(mapping_path="/app/exports/qestion_mapping.csv")
