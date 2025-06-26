@@ -56,6 +56,8 @@ def seed_audio_files(session: Session):
             file_path = f"/audio/{narrator_folder.name}/{filename}"
             audio_type = AudioType.synthetic if code.endswith("S") else AudioType.human
 
+
+
             audio_in = AudioFileCreate(
                 type=audio_type,
                 narrator_id=narrator_obj.id,
