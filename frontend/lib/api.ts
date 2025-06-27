@@ -13,10 +13,13 @@ import {
 } from "./types/survey";
 // import axios, { AxiosError } from "axios";
 // Define the base URL for the API
-const base = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-const API_URL = base;
+const base = process.env.API_URL || 'http://localhost:8000';
+const MEDIA_URL = process.env.NEXT_PUBLIC_MEDIA_URL || 'http://localhost:8000';
+
 const API_BASE_URL = `${base}/api/v1`;
 const API_AUTH = `${base}/api/v1/auth/device`;
+
+// console.log("API_BASE_URL:", API_BASE_URL);
 
 export async function createUser(): Promise<string> {
   // const randomIp = `192.168.${Math.floor(Math.random() * 256)}.${Math.floor(
@@ -222,7 +225,7 @@ export async function getAudioFiles(): Promise<AudioGroup[]> {
     for (const [narratorId, files] of Object.entries(audioFiles)) {
       groupedAudio[narratorId] = files.map((file, index) => ({
         id: file.id, // file.code -> to fix the issue with duplicate IDs, TODO
-        audioUrl: API_URL + file.file_path,
+        audioUrl: MEDIA_URL + file.file_path,
         text: `Posnetek ${index + 1}`,
         played: false,
         answered: false,
@@ -273,7 +276,7 @@ export const getTestAudioFile = async () => {
   const data = await response.json();
 
   const audioFilePath = data.file_path;
-  return `${API_URL}${audioFilePath}`;
+  return `${MEDIA_URL}${audioFilePath}`;
 };
 
 export const submitAudioReview = async (
@@ -282,6 +285,7 @@ export const submitAudioReview = async (
   review: string
 ): Promise<any> => {
   try {
+    
     const response = await fetch(`${API_BASE_URL}/audio/review/${audio_id}`, {
       method: "POST",
       headers: {
@@ -339,8 +343,7 @@ export const submitEmail = async (
 };
 
 export const verifyCaptcha = async (token: string): Promise<boolean> => {
-  const secretKey = "6LfiomsrAAAAAM3NejMevW9-ep9IO2N6snqTYv6x"; //process.env.RECAPTCHA_SECRET_KEY
-  console.log("secretKey", secretKey);
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
 
   if (!secretKey) {
     throw new Error("RECAPTCHA_SECRET_KEY is not defined in env");

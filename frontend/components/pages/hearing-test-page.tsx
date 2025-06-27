@@ -50,10 +50,6 @@ export function HearingTestPage({
             </p>
             <Card className="w-full max-w-xl overflow-hidden items-center bg-blue-50 border-none">
               <div className="flex flex-col items-center justify-center py-8">
-                <p className="text-gray-600 mb-6 text-base text-center p-2">
-                  Pritisnite gumb za predvajanje testnega zvoka
-                </p>
-
                 <Button
                   onClick={onAudioPlay}
                   className="bg-gray-900 text-white w-50"
@@ -71,6 +67,20 @@ export function HearingTestPage({
                     </>
                   )}
                 </Button>
+                <div className="flex items-center justify-center space-x-2 mt-4 w-full">
+                  <Checkbox
+                    id="hearing-check"
+                    checked={canHearWell}
+                    onCheckedChange={onHearingChange}
+                    className="border-black"
+                  />
+                  <label
+                    htmlFor="hearing-check"
+                    className=" font-medium cursor-pointer"
+                  >
+                    <strong> DOBRO SLIŠIM </strong>
+                  </label>
+                </div>
                 <p className="text-gray-600 text-base mt-6 mb-0 p-2">
                   Testni zvok lahko predvajate večkrat
                 </p>
@@ -80,21 +90,6 @@ export function HearingTestPage({
               Ko ste prepričani, da dobro slišite,{" "}
               <strong>odkljukajte DOBRO SLIŠIM ter kliknite NADALJUJ</strong>
             </p>
-
-            <div className="flex items-center justify-end space-x-2 mt-4 w-full">
-              <Checkbox
-                id="hearing-check"
-                checked={canHearWell}
-                onCheckedChange={onHearingChange}
-                className="border-black"
-              />
-              <label
-                htmlFor="hearing-check"
-                className=" font-medium cursor-pointer"
-              >
-                <strong> DOBRO SLIŠIM </strong>
-              </label>
-            </div>
 
             <div className="flex justify-between sm:pt-6 w-full">
               <Button

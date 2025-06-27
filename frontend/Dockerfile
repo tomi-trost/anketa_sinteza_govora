@@ -31,13 +31,12 @@ COPY --from=nextjs-builder /app/package.json ./package.json
 COPY --from=nextjs-builder /app/.next/standalone ./
 COPY --from=nextjs-builder /app/.next/static ./.next/static
 
-
-
-# Environment variables (you can override these in docker-compose.yml)
+# Environment variables
 ENV NODE_ENV=production
 ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
 
 EXPOSE 3000
 
+# Bind to 0.0.0.0 to accept connections from outside the container
 CMD ["node", "server.js"]
-# CMD ["yarn", "dev"]

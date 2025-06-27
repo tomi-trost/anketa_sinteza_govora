@@ -35,7 +35,7 @@ export function ThankYouPage({ progressPercentage }: ThankYouPageProps) {
       await navigator.clipboard.writeText(currentUrl);
       setIsCopied(true);
       // Reset the copied state after 2 seconds
-      setTimeout(() => setIsCopied(false), 2000);
+      setTimeout(() => setIsCopied(false), 4000);
     } catch (err) {
       console.error("Failed to copy URL:", err);
     }
@@ -96,9 +96,7 @@ export function ThankYouPage({ progressPercentage }: ThankYouPageProps) {
                     Pošlji
                   </Button>
                 </div>
-                <p className="text-xs text-gray-400 mt-2">
-                  Neobvezno - če želite prejeti povzetek rezultatov raziskave
-                </p>
+                
               </div>
             ) : (
               <div className="mt-8 p-4 bg-green-50 rounded-lg">
@@ -120,12 +118,12 @@ export function ThankYouPage({ progressPercentage }: ThankYouPageProps) {
                 <Button
                   onClick={handleShareSurvey}
                   variant="outline"
-                  className="inline-flex items-center gap-2 px-4 py-2"
+                  className="inline-flex items-center gap-2 px-4 py-5 whitespace-normal"
                 >
                   {isCopied ? (
                     <>
                       <Check className="h-4 w-4 text-green-600" />
-                      Kopirano!
+                      Povezava na anketo je kopirana v odložišče!
                     </>
                   ) : (
                     <>
@@ -135,13 +133,13 @@ export function ThankYouPage({ progressPercentage }: ThankYouPageProps) {
                   )}
                 </Button>
               </div>
-              <div className="flex items-center justify-center mt-6">
+              <div className="flex items-center justify-center">
                 <p className="text-gray-500 text-sm my-6 max-w-3xl">
                   Na eni napravi je anketo moč izpolnjevati le enkrat, drugi jo
                   bodo morali izpolniti na svojih.
                   <br />
                   <br />
-                  Rezultate bomo predstavili simpoziju{" "}
+                  Rezultate bomo predstavili na simpoziju{" "}
                   <strong>
                     <a href="https://www.agrft.uni-lj.si/blog/2025/01/26/govor-glas-identiteta/" className=" text-blue-600 hover:text-blue-800 visited:text-purple-600 duration-300 ease-in-out">
                       GOVOR. GLAS. IDENTITETA.
