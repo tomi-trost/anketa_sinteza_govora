@@ -77,7 +77,7 @@ class SyntheticSpeachRole(str, enum.Enum):
 # --------------------------------
 
 class UserBase(SQLModel):
-    # ip: str
+    ip: str
     # mac: str
     email: Optional[str] = None
 

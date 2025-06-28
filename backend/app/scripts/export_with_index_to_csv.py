@@ -12,6 +12,7 @@ from app.models.audio_file import AudioReview
 question_maps = {
     "id": "Identifikator uporabnika (ni vprašanje, dodeljen avtomatsko)",
     "created_at": "Datum in čas izpolnjevanja (ni vprašanje, beleži se avtomatsko)",
+    "ip": "Uporabnikov ip naslov (ni vprašanje, beleži se avtomatsko)",
     "email": "Če želite, lahko vpišete svoj e-naslov in poslali vam bomo rezultate raziskave.",
 
     "gender": "Spol",
@@ -118,14 +119,15 @@ def export_users_to_csv(output_path="survey_export.csv"):
             "speach_experience", "speach_role", "speach_other_role",
             "synthetic_speach_experience", "synthetic_speach_role", "synthetic_speach_other_role"
         ]
-        header = ["id", "created_at"] + user_base_fields + audio_headers + narrator_headers
+        header = ["id", "created_at", "ip"] + user_base_fields + audio_headers + narrator_headers
 
         rows = []
 
         for user in users:
             base_data = {
                 "id": str(user.id),
-                "created_at": user.created_at.isoformat() if user.created_at else ""
+                "created_at": user.created_at.isoformat() if user.created_at else "",
+                "ip": str(user.ip),
             }
 
             for field in user_base_fields:
