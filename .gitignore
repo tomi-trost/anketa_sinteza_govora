@@ -1,8 +1,9 @@
 .venv/
 .env
+deploy.env
+
 backend/static_audio
 backend/exports
-deploy.env
 
 frontend/.next
 frontend/audio_files
