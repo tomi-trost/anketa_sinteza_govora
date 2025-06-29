@@ -1,0 +1,44 @@
+﻿# Ignore Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Ignore virtual environments
+venv/
+.env/
+.env.*  # All .env variants
+
+# Ignore test-related files
+tests/
+*.test.*
+*.pytest_cache/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore git and version control
+.git/
+.gitignore
+
+# Ignore local configs or logs
+*.log
+*.sqlite3
+*.db
+*.bak
+
+# Ignore node_modules and frontend artifacts if mistakenly copied
+node_modules/
+.next/
+yarn.lock
+package.json
+
+# Ignore editor configs
+.vscode/
+.idea/
+
+# If these files aren't needed inside the image:
+docker-compose*.yml
+README.md
+*.md

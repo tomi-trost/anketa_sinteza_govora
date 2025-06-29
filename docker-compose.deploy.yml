@@ -1,6 +1,14 @@
 ﻿version: '3.9'
 
 services:
+  prestart:
+    image: ${DOCKER_IMAGE_BACKEND}
+    env_file:
+      - deploy.env
+    command: bash scripts/prestart.sh
+    depends_on:
+      - db
+    
   backend:
     image: ${DOCKER_IMAGE_BACKEND}
     env_file: deploy.env
@@ -30,7 +38,7 @@ services:
     environment:
       - NODE_ENV=production
       - API_URL=http://backend:8000
-      - NEXT_PUBLIC_MEDIA_URL=https://api.${DOMAIN}
+      - NEXT_PUBLIC_MEDIA_URL=http://api.${DOMAIN}
     networks:
       - traefik-public
       - default
@@ -85,4 +93,4 @@ volumes:
 
 networks:
   traefik-public:
-    external: true
+    # external: true
