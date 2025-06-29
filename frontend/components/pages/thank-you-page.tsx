@@ -83,7 +83,7 @@ export function ThankYouPage({ progressPercentage }: ThankYouPageProps) {
                 <div className="space-y-4 flex justify-center items-center gap-2 w-full">
                   <Input
                     type="email"
-                    placeholder="Vpiši email"
+                    placeholder="Vpiši e-naslov"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full mt-4"
@@ -101,10 +101,10 @@ export function ThankYouPage({ progressPercentage }: ThankYouPageProps) {
             ) : (
               <div className="mt-8 p-4 bg-green-50 rounded-lg">
                 <p className="text-green-700 font-medium">
-                  Email uspešno poslan!
+                  E-naslov uspešno poslan!
                 </p>
                 <p className="text-green-600 text-sm mt-1">
-                  O rezultatih raziskave vas bomo obvestili na vaš email naslov.
+                  O rezultatih raziskave vas bomo obvestili na vaš e-naslov.
                 </p>
               </div>
             )}

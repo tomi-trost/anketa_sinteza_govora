@@ -32,27 +32,67 @@ export const isDemographicsComplete = (
   ];
 
   // Check if all basic required fields are filled
-  const basicFieldsComplete = required.every((field) => demographics[field]);
-  
+  const basicFieldsComplete = required.every((field) => {
+    const value = demographics[field];
+    return value !== undefined && value !== null && value !== "";
+  });
+
   if (!basicFieldsComplete) {
     return false;
   }
 
   // Check conditional required fields
   const conditionalFields = [
-    { condition: "media_experience", role: "media_role" },
-    { condition: "speach_experience", role: "speach_role" },
-    { condition: "synthetic_speach_experience", role: "synthetic_speach_role" }
+    {
+      condition: "media_experience",
+      role: "media_role",
+      otherField: "media_other_input",
+    },
+    {
+      condition: "speach_experience",
+      role: "speach_role",
+      otherField: "speach_other_role",
+    },
+    {
+      condition: "synthetic_speach_experience",
+      role: "synthetic_speach_role",
+      otherField: "synthetic_speach_other_role",
+    },
   ];
 
-  const conditionalFieldsComplete = conditionalFields.every(({ condition, role }) => {
-    // If the experience field is true, then the corresponding role field must be filled
-    if (demographics[condition as keyof DemographicsDataSurvey] === "yes") {
-      return demographics[role as keyof DemographicsDataSurvey];
+  const conditionalFieldsComplete = conditionalFields.every(
+    ({ condition, role, otherField }) => {
+      const experienceValue =
+        demographics[condition as keyof DemographicsDataSurvey];
+
+      // If the experience field is "yes", then the corresponding role field must be filled
+      if (experienceValue === "yes") {
+        const roleValue = demographics[role as keyof DemographicsDataSurvey];
+
+        // Role field must be selected
+        if (!roleValue || roleValue === "") {
+          return false;
+        }
+
+        // If role is "drugo" (other), the corresponding other input field must be filled
+        if (roleValue === "drugo") {
+          const otherValue =
+            demographics[otherField as keyof DemographicsDataSurvey];
+          return (
+            otherValue !== undefined &&
+            otherValue !== null &&
+            otherValue !== "" &&
+            String(otherValue).trim() !== ""
+          );
+        }
+
+        return true;
+      }
+
+      // If experience is not "yes", role field is not required
+      return true;
     }
-    // If experience is false or not set, role field is not required
-    return true;
-  });
+  );
 
   return conditionalFieldsComplete;
 };

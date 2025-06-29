@@ -170,7 +170,7 @@ export function useSurvey() {
         setUserId(user); // TODO: change
         localStorage.setItem("survey_user_id", user);
         document.cookie = `access_token=${accessToken}; path=/; max-age=${
-          60 * 60 * 24
+          60 * 60 * 24 * 60 // 2 months
         }; samesite=lax`;
       } else {
         console.error("Failed to create user");
@@ -239,7 +239,6 @@ export function useSurvey() {
     }
   };
 
-
   const submitMail = async (email: string) => {
     let savedToken = getCookie("access_token");
 
@@ -257,7 +256,7 @@ export function useSurvey() {
     } catch (error) {
       console.error("Failed to submit email:", error);
     }
-  }
+  };
 
   // Save state to localStorage whenever it changes
   useEffect(() => {
@@ -305,7 +304,22 @@ export function useSurvey() {
     field: keyof DemographicsDataSurvey,
     value: string
   ) => {
-    setDemographics((prev) => ({ ...prev, [field]: value }));
+    setDemographics((prev) => {
+      const updated = { ...prev, [field]: value };
+
+      // Clear the other input field if not selecting "drugo"
+      if (value !== "drugo") {
+        if (field === "media_role") {
+          delete (updated as any).media_other_input;
+        } else if (field === "speach_role") {
+          delete (updated as any).speach_other_role;
+        } else if (field === "synthetic_speach_role") {
+          delete (updated as any).synthetic_speach_other_role;
+        }
+      }
+
+      return updated;
+    });
   };
 
   const debouncedHandleChange = useMemo(
@@ -504,6 +518,6 @@ export function useSurvey() {
     handleNextPage,
     handleNextPageSurvey,
     submitCaptcha,
-    submitMail
+    submitMail,
   };
 }
