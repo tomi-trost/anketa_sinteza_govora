@@ -1,4 +1,4 @@
-﻿from sqlmodel import SQLModel, Field
+﻿from sqlmodel import SQLModel
 from typing import Optional
 
 # JSON payload containing access token

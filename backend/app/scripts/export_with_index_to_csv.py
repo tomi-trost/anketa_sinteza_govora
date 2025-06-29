@@ -2,8 +2,8 @@
 import re
 
 from sqlmodel import Session, select
-from app.core.db import engine  # replace with your actual DB engine import
-from app.models import User, AudioFile, UserKnowsNarrator
+from app.core.db import engine 
+from app.models import User, AudioFile
 
 from app.models.user import Gender, Education, DeviceLabel, MediaRole, SpeachRole, SyntheticSpeachRole
 from app.models.narrator import KnowsNarratorLabel, Narrator

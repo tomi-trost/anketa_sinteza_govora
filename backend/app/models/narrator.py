@@ -8,7 +8,6 @@ if TYPE_CHECKING:
     from .user import User
     from .audio_file import AudioFile
 
-# from app.models import User, AudioFile
 
 # ===== Narrator CRUD =====
 

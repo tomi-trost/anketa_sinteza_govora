@@ -4,7 +4,6 @@ from sqlmodel import Session, select
 from app.models.narrator import (
     Narrator,
     NarratorCreate,
-    NarratorOut,
     UserKnowsNarrator,
     UserKnowsNarratorCreate,
     UserKnowsNarratorUpdate,

@@ -10,7 +10,6 @@ if TYPE_CHECKING:
     from .narrator import UserKnowsNarrator
     from .audio_file import UserReviewAudio
 
-# from app.models import UserKnowsNarrator, UserReviewAudio
 
 # ================== User ================== 
 
@@ -78,7 +77,6 @@ class SyntheticSpeachRole(str, enum.Enum):
 
 class UserBase(SQLModel):
     ip: str
-    # mac: str
     email: Optional[str] = None
 
     gender: Optional[Gender] = None
