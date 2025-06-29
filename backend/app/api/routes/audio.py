@@ -36,7 +36,7 @@ def list_audio_files(session: SessionDep):
             "J6S", "J1S", "J7N", "J10N", "J3SSD", "J2N", "J4S", "J3N", "J9N", "J5S", "J8S", "J3NND"
         ],
         "Žiga": [
-            "Z1N", "Z10N", "Z2S", "Z6S", "Z9N", "Z5N", "Z3NN", "Z3SS", "Z8S", "Z4S", "Z2N", "Z9S",
+            "Z1N", "Z10N", "Z2S", "Z6S", "Z9N", "Z5N", "Z3NN", "Z3SS", "Z8S", "Z7N", "Z2N", "Z9S",
             "Z1S", "Z3N", "Z6N", "Z3NND", "Z7S", "Z4S", "Z10S", "Z8N", "Z5S", "Z3S", "Z3SSD", "Z4N"
         ]
     }
