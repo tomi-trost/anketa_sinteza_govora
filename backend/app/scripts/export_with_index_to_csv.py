@@ -12,6 +12,7 @@ from app.models.audio_file import AudioReview
 question_maps = {
     "id": "Identifikator uporabnika (ni vprašanje, dodeljen avtomatsko)",
     "created_at": "Datum in čas izpolnjevanja (ni vprašanje, beleži se avtomatsko)",
+    "ip": "Uporabnikov ip naslov (ni vprašanje, beleži se avtomatsko)",
     "email": "Če želite, lahko vpišete svoj e-naslov in poslali vam bomo rezultate raziskave.",
 
     "gender": "Spol",
@@ -118,41 +119,92 @@ def export_users_to_csv(output_path="survey_export.csv"):
             "speach_experience", "speach_role", "speach_other_role",
             "synthetic_speach_experience", "synthetic_speach_role", "synthetic_speach_other_role"
         ]
-        header = ["id", "created_at"] + user_base_fields + audio_headers + narrator_headers
+        header = ["id", "created_at", "ip"] + user_base_fields + audio_headers + narrator_headers + ["survey_completed"]
 
         rows = []
 
         for user in users:
             base_data = {
                 "id": str(user.id),
-                "created_at": user.created_at.isoformat() if user.created_at else ""
+                "created_at": user.created_at.isoformat() if user.created_at else "",
+                "ip": str(user.ip) if user.ip else -99,
             }
+
+            # AUDIO REVIEW COMPLETION LOGIC
+            reviewed_audio_codes = {
+                review.audio.code for review in user.audio_reviews if review.audio and review.review is not None
+            }
+            survey_completed = len(reviewed_audio_codes) == len(audio_headers)
 
             for field in user_base_fields:
-                value = getattr(user, field)
-                # Use enum map if available
+                value = getattr(user, field, None)
+
+                # CONDITIONAL FIELDS (SHOWN ONLY WHEN ROLE == other)
+                if field == "device_other_input":
+                    if user.device_lable == DeviceLabel.drugo:
+                        base_data[field] = value if value else -99
+                    else:
+                        base_data[field] = -2
+                    continue
+
+                if field == "media_other_input":
+                    if user.media_role == MediaRole.drugo:
+                        base_data[field] = value if value else -99
+                    else:
+                        base_data[field] = -2
+                    continue
+
+                if field == "speach_other_input":
+                    if user.speach_role == SpeachRole.drugo:
+                        base_data[field] = value if value else -99
+                    else:
+                        base_data[field] = -2
+                    continue
+
+                if field == "synthetic_speach_other_input":
+                    if user.synthetic_speach_role == SyntheticSpeachRole.drugo:
+                        base_data[field] = value if value else -99
+                    else:
+                        base_data[field] = -2
+                    continue
+
+                # Email is optional
+                if field == "email":
+                    base_data[field] = value if value else -99
+                    continue
+
+                # ENUM FIELDS
                 if field in enum_maps:
-                    base_data[field] = enum_maps[field].get(value, "")
+                    base_data[field] = enum_maps[field].get(value, -99 if value is None else value)
                 else:
-                    base_data[field] = value if value is not None else ""
+                    base_data[field] = value if value is not None else -99
 
-
-            # Audio review (already numeric, no change)
+            # AUDIO REVIEWS
             user_reviews = {
-                review.audio.code: enum_maps["audio_review"].get(review.review, "") 
-                for review in user.audio_reviews if review.audio and review.review
+                review.audio.code: enum_maps["audio_review"].get(review.review, -99)
+                for review in user.audio_reviews if review.audio
             }
             for code in audio_headers:
-                base_data[code] = user_reviews.get(code, "")
+                base_data[code] = user_reviews.get(code, -99)
 
-            # Narrator knowledge
+            # NARRATOR KNOWLEDGE
             knr_map = {knr.narrator.name: knr for knr in user.knows_narrators}
             for name in narrator_names:
                 knr = knr_map.get(name)
-                label = knr.knows_narrator_lable if knr else ""
-                base_data[f"{name}_knows_narrator_lable"] = enum_maps["knows_narrator_lable"].get(label, "") if label else ""
-                base_data[f"{name}_narrator_prediction"] = knr.narrator_prediction if knr else ""
-                base_data[f"{name}_comment"] = knr.comment if knr else ""
+                label = knr.knows_narrator_lable if knr else None
+
+                base_data[f"{name}_knows_narrator_lable"] = (
+                    enum_maps["knows_narrator_lable"].get(label, -99) if label else -99
+                )
+                base_data[f"{name}_narrator_prediction"] = (
+                    knr.narrator_prediction if knr and knr.narrator_prediction else -99
+                )
+                base_data[f"{name}_comment"] = (
+                    knr.comment if knr and knr.comment else -99
+                )
+
+            # ADD SURVEY COMPLETION STATUS
+            base_data["survey_completed"] = 1 if survey_completed else -3
 
             rows.append(base_data)
 
