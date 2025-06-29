@@ -10,7 +10,6 @@ from app.api.deps import SessionDep
 from app.models.token import Token
 from app.models.user import User
 
-
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
