@@ -1,6 +1,6 @@
 ﻿from typing import Optional, List
 from uuid import UUID
-from sqlmodel import Session, select
+from sqlmodel import Session
 from app.models.user import User, UserCreate, UserUpdate
 
 
@@ -36,11 +36,6 @@ def delete_user(session: Session, user_id: UUID) -> bool:
     session.delete(user)
     session.commit()
     return True
-
-
-# def get_by_ip_mac(session: Session, ip: str, mac: str) -> Optional[User]:
-#     statement = select(User).where((User.ip == ip) & (User.mac == mac))
-#     return session.exec(statement).first()
 
 
 def get_already_filled_fields(session: Session, user_id: UUID, user_update: UserUpdate) -> List[str]:

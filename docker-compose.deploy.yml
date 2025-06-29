@@ -1,0 +1,96 @@
+﻿version: '3.9'
+
+services:
+  prestart:
+    image: ${DOCKER_IMAGE_BACKEND}
+    env_file:
+      - deploy.env
+    command: bash scripts/prestart.sh
+    depends_on:
+      - db
+    
+  backend:
+    image: ${DOCKER_IMAGE_BACKEND}
+    env_file: deploy.env
+    networks:
+      - traefik-public
+      - default
+    volumes:
+      - ./exports:/app/exports
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+      - traefik.http.services.${STACK_NAME}-backend.loadbalancer.server.port=8000
+      - traefik.http.routers.${STACK_NAME}-backend-http.rule=Host(`api.${DOMAIN}`)
+      - traefik.http.routers.${STACK_NAME}-backend-http.entrypoints=http
+      - traefik.http.routers.${STACK_NAME}-backend-http.middlewares=https-redirect
+      - traefik.http.routers.${STACK_NAME}-backend-https.rule=Host(`api.${DOMAIN}`)
+      - traefik.http.routers.${STACK_NAME}-backend-https.entrypoints=https
+      - traefik.http.routers.${STACK_NAME}-backend-https.tls=true
+      - traefik.http.routers.${STACK_NAME}-backend-https.tls.certresolver=le
+    depends_on:
+      - db
+
+  frontend:
+    image: ${DOCKER_IMAGE_FRONTEND}
+    env_file: deploy.env
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://backend:8000
+      - NEXT_PUBLIC_MEDIA_URL=http://api.${DOMAIN}
+    networks:
+      - traefik-public
+      - default
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+      - traefik.http.services.${STACK_NAME}-frontend.loadbalancer.server.port=3000
+      - traefik.http.routers.${STACK_NAME}-frontend-http.rule=Host(`dashboard.${DOMAIN}`)
+      - traefik.http.routers.${STACK_NAME}-frontend-http.entrypoints=http
+      - traefik.http.routers.${STACK_NAME}-frontend-http.middlewares=https-redirect
+      - traefik.http.routers.${STACK_NAME}-frontend-https.rule=Host(`dashboard.${DOMAIN}`)
+      - traefik.http.routers.${STACK_NAME}-frontend-https.entrypoints=https
+      - traefik.http.routers.${STACK_NAME}-frontend-https.tls=true
+      - traefik.http.routers.${STACK_NAME}-frontend-https.tls.certresolver=le
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    environment:
+      - ADMINER_DESIGN=pepa-linha-dark
+    networks:
+      - traefik-public
+      - default
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+      - traefik.http.routers.${STACK_NAME}-adminer-http.rule=Host(`adminer.${DOMAIN}`)
+      - traefik.http.routers.${STACK_NAME}-adminer-http.entrypoints=http
+      - traefik.http.routers.${STACK_NAME}-adminer-http.middlewares=https-redirect
+      - traefik.http.routers.${STACK_NAME}-adminer-https.rule=Host(`adminer.${DOMAIN}`)
+      - traefik.http.routers.${STACK_NAME}-adminer-https.entrypoints=https
+      - traefik.http.routers.${STACK_NAME}-adminer-https.tls=true
+      - traefik.http.routers.${STACK_NAME}-adminer-https.tls.certresolver=le
+      - traefik.http.services.${STACK_NAME}-adminer.loadbalancer.server.port=8080
+
+volumes:
+  pgdata:
+
+networks:
+  traefik-public:
+    # external: true

@@ -1,9 +1,7 @@
-﻿from fastapi import APIRouter, Depends, HTTPException
+﻿from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
-from sqlmodel import Session
 from typing import Dict, List
 from uuid import UUID
-from pathlib import Path
 
 from app.models.audio_file import AudioFileOut, CreateUserReviewAudio, UserReviewAudioIn, TestAudioFile
 from app.crud import audio_file as crud_audio_file

@@ -1,4 +1,4 @@
-from sqlmodel import Session, create_engine, select
+from sqlmodel import Session, create_engine
 from contextlib import contextmanager
 
 # from app.crud import user as crud_user 

@@ -1,6 +1,5 @@
-﻿from fastapi import APIRouter, Depends, HTTPException
+﻿from fastapi import APIRouter, HTTPException
 from typing import List
-from uuid import UUID
 
 from app.models.narrator import NarratorOut, NarratorName
 from app.crud import narrator as crud_narrator
