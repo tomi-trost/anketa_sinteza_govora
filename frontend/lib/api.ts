@@ -11,6 +11,10 @@ import {
   UserData,
   VoiceRecognition,
 } from "./types/survey";
+
+// Load environment variables from .env file
+require('dotenv').config();
+
 // import axios, { AxiosError } from "axios";
 // Define the base URL for the API
 const base = process.env.API_URL || 'http://localhost:8000';
@@ -212,7 +216,8 @@ export async function getUserData(userId: string): Promise<any> {
 // Get audio files
 export async function getAudioFiles(): Promise<AudioGroup[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/audio`);
+    console.log(`Attempting to retrieve audio files from ${API_BASE_URL}/audio/ .`)
+    const response: Response = await fetch(`${API_BASE_URL}/audio/`);
 
     if (!response.ok) {
       throw new Error(`API error: ${response.status}`);

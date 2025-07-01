@@ -83,7 +83,7 @@ export function InstructionsPage({
             <div className="flex flex-col sm:pt-6 w-full items-end gap-2">
               <ReCAPTCHA
                 ref={recaptchaRef}
-                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LfOgW8rAAAAAF3nGfmtJJILSWn1yMnNcLIsoVCn"} 
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6Le01HMrAAAAAE7vGXraFpr57XkR5Ddeg52-LtdE"}
                 size="invisible" // or use size="normal" for the checkbox
                 onChange={() => setVerified(true)}
               />
