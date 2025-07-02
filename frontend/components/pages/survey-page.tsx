@@ -4,10 +4,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Volume2, Play, Pause } from "lucide-react";
+import { Play, Pause } from "lucide-react";
 import { ProgressBar } from "@/components/shared/progress-bar";
 import { getAnswerDisplayText } from "@/lib/utils/utils";
-import { AudioGroup, VoiceRecognition } from "@/lib/types/survey";
+import {
+  AudioGroup,
+  VoiceRecognition,
+} from "@/lib/types/survey";
+import { useEffect, useRef, useState } from "react";
 
 interface SurveyPageProps {
   progressPercentage: number;
@@ -53,11 +57,45 @@ export function SurveyPage({
     );
   }
 
+  const scrollToAudio = (questionId: string) => {
+    const audioEl = audioRefs.current[questionId];
+    if (audioEl) {
+      audioEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
+  useEffect(() => {
+    // Scroll to the first unanswered question when the component mounts
+    const currentGroup = audioGroups[currentAudioGroupIndex];
+    const firstUnansweredQuestion = currentGroup.questions.find(
+      (q) => !q.answered
+    );
+    if (firstUnansweredQuestion) {
+      scrollToAudio(firstUnansweredQuestion.id);
+    }
+  }, [currentAudioGroupIndex, audioGroups]);
+
+  const questionAnswersRef = useRef<HTMLDivElement | null>(null);
+  const audioRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const additionalQuestionsRef = useRef<HTMLDivElement | null>(null);
+
   const currentGroup = audioGroups[currentAudioGroupIndex];
   const allQuestionsAnswered = currentGroup.questions.every((q) => q.answered);
 
+  
+
+  useEffect(() => {
+    if (allQuestionsAnswered && additionalQuestionsRef.current) {
+    // Scroll to additional questions if all audio questions are answered
+    additionalQuestionsRef.current.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+  }
+  }, [allQuestionsAnswered]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F3E7E9] to-[#E3EEFF] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#F3E7E9] to-[#E3EEFF] flex items-center justify-center p-4 max-h-screen overflow-y-auto">
       <Card className="sm:max-w-5xl 2xl:max-w-6xl bg-white overflow-hidden w-full">
         <ProgressBar percentage={progressPercentage} />
         <CardContent className="p-4 sm:p-8">
@@ -74,10 +112,30 @@ export function SurveyPage({
                 const canPlay =
                   index === 0 || currentGroup.questions[index - 1].answered;
                 const isActive = question.played && !question.answered;
+                // check if the question is next in line to be played
+                const isNextQuestion =
+                  index === 0 ||
+                  (currentGroup.questions[index - 1].answered &&
+                    !currentGroup.questions[index - 1].isPlaying);
+
+                if (isActive) {
+                  // If the question is currently playing, we need to scroll to it
+                  setTimeout(() => {
+                    if (questionAnswersRef.current) {
+                      questionAnswersRef.current.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                      });
+                    }
+                  }, 100); // Small delay to ensure the scroll happens after rendering
+                }
 
                 return (
                   <div
-                    key={question.id + index}
+                    ref={(el) => {
+                      if (el) audioRefs.current[question.id] = el;
+                    }}
+                    key={question.id}
                     className={`border rounded-md overflow-hidden transition-all duration-300 ${
                       question.answered
                         ? "border-green-500 bg-green-50"
@@ -91,11 +149,11 @@ export function SurveyPage({
                       className={`relative p-4 cursor-pointer transition-all duration-300 ${
                         !canPlay && !question.played ? "opacity-50" : ""
                       }`}
-                      onClick={() =>
-                        canPlay &&
-                        !question.played &&
-                        onPlayAudio(currentAudioGroupIndex, question.id)
-                      }
+                      onClick={() => {
+                        if (canPlay && !question.played) {
+                          onPlayAudio(currentAudioGroupIndex, question.id);
+                        }
+                      }}
                       style={{
                         background: question.isPlaying
                           ? `linear-gradient(to right, rgba(219, 234, 254, 0.5) ${question.progress}%, transparent ${question.progress}%)`
@@ -149,7 +207,10 @@ export function SurveyPage({
                     {question.played &&
                       !question.isPlaying &&
                       !question.answered && (
-                        <div className="border-t bg-gray-50 p-4 animate-in slide-in-from-top-2 duration-300">
+                        <div
+                          ref={questionAnswersRef}
+                          className="border-t bg-gray-50 p-4 animate-in slide-in-from-top-2 duration-300"
+                        >
                           {/* <p className="font-medium text-sm mb-3">Kako ocenjujete ta govor?</p> */}
                           <RadioGroup
                             value={question.answer}
@@ -231,9 +292,8 @@ export function SurveyPage({
               })}
 
               {/* Additional questions after all audio questions are answered */}
-              {
-                allQuestionsAnswered && (
-                <div className="space-y-6 mt-8 border-t pt-6">
+              {allQuestionsAnswered && (
+                <div ref={additionalQuestionsRef} className="space-y-6 mt-8 border-t pt-6">
                   <div className="space-y-3">
                     <Label className="font-medium">
                       Ali ste prepoznali glas govorca na posnetku?
@@ -347,8 +407,13 @@ export function SurveyPage({
 
             <div className="flex justify-end">
               <Button
-                onClick={() => onNext(currentGroup.questions[0].narratorId, currentGroup.voiceRecognition)}
-                disabled={!currentGroup.voiceRecognition.recognized}  // !allQuestionsAnswered || !currentGroup.voiceRecognition.recognized
+                onClick={() =>
+                  onNext(
+                    currentGroup.questions[0].narratorId,
+                    currentGroup.voiceRecognition
+                  )
+                }
+                disabled={!currentGroup.voiceRecognition.recognized} // !allQuestionsAnswered || !currentGroup.voiceRecognition.recognized
                 className="bg-black text-white hover:bg-gray-800"
               >
                 NADALJUJ
