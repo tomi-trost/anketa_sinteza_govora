@@ -37,7 +37,7 @@ export function HearingTestPage({
           <div className="space-y-6 flex flex-col sm:pt-5 items-center">
             <div className="sm:border-l-4 sm:border-blue-400 sm:pl-4 w-full">
               <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800 flex items-center gap-2 text-start w-full">
-                Test Slišnosti
+                Preizkus Slišnosti
               </h1>
             </div>
 
@@ -82,13 +82,13 @@ export function HearingTestPage({
                   </label>
                 </div>
                 <p className="text-gray-600 text-base mt-6 mb-0 p-2">
-                  Testni zvok lahko predvajate večkrat
+                  Testni posnetek lahko predvajate večkrat.
                 </p>
               </div>
             </Card>
             <p className=" text-gray-600 text-start w-full sm:pt-2">
               Ko ste prepričani, da dobro slišite,{" "}
-              <strong>odkljukajte DOBRO SLIŠIM ter kliknite NADALJUJ</strong>
+              <strong>odkljukajte DOBRO SLIŠIM ter kliknite NADALJUJ.</strong>
             </p>
 
             <div className="flex justify-between sm:pt-6 w-full">

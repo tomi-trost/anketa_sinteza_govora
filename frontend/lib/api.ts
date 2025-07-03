@@ -216,8 +216,9 @@ export async function getUserData(userId: string): Promise<any> {
 // Get audio files
 export async function getAudioFiles(): Promise<AudioGroup[]> {
   try {
-    console.log(`Attempting to retrieve audio files from ${API_BASE_URL}/audio/ .`)
-    const response: Response = await fetch(`${API_BASE_URL}/audio/`);
+    const response = await fetch(`${API_BASE_URL}/audio/`);
+    // console.log("MEDIA_URL:", MEDIA_URL);
+    //console.log("API_BASE_URL:", API_BASE_URL);
 
     if (!response.ok) {
       throw new Error(`API error: ${response.status}`);

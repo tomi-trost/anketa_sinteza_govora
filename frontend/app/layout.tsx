@@ -3,7 +3,7 @@ import './globals.css'
 import { Open_Sans, Montserrat } from 'next/font/google'
 
 export const metadata: Metadata = {
-  title: 'Raziskava o Razpoznavanju Sintetiziranega Govora',
+  title: 'Razločevanje med naravnim in sintetiziranim govorom',
   description: '',
   generator: '',
   viewport: {

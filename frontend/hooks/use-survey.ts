@@ -135,6 +135,21 @@ export function useSurvey() {
               });
 
               setAudioGroups(mergedGroups);
+
+              let found = false;
+              for (let i = 0; i < mergedGroups.length; i++) {
+                const group = mergedGroups[i];
+                for (let j = 0; j < group.questions.length; j++) {
+                  const question = group.questions[j];
+                  if (!question.answered) {
+                    
+
+                    found = true;
+                    break;
+                  }
+                }
+                if (found) break;
+              }
             }
           }
         } catch (error) {

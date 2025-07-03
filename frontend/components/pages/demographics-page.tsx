@@ -3,7 +3,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -14,7 +13,7 @@ import {
 import { ProgressBar } from "@/components/shared/progress-bar";
 import { DemographicsDataSurvey } from "@/lib/types/survey";
 import { isDemographicsComplete } from "@/lib/utils/utils";
-import { IconUser } from "@tabler/icons-react";
+import { useEffect, useRef } from "react";
 
 interface DemographicsPageProps {
   progressPercentage: number;
@@ -34,8 +33,83 @@ export function DemographicsPage({
   onNext,
   onBack,
 }: DemographicsPageProps) {
+  const mediaExperienceRef = useRef<HTMLDivElement | null>(null);
+  const mediaExperienceOtherInputRef = useRef<HTMLInputElement | null>(null);
+  const speechExperienceRef = useRef<HTMLDivElement | null>(null);
+  const speechExperienceOtherInputRef = useRef<HTMLInputElement | null>(null);
+  const syntheticSpeechExperienceRef = useRef<HTMLDivElement | null>(null);
+  const syntheticSpeechExperienceOtherInputRef = useRef<HTMLInputElement | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (demographics.media_experience === "yes" && mediaExperienceRef.current) {
+      mediaExperienceRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+
+    if (
+      demographics.media_experience === "yes" &&
+      demographics.media_role === "drugo" &&
+      mediaExperienceOtherInputRef.current
+    ) {
+      mediaExperienceOtherInputRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [demographics.media_experience, demographics.media_role]);
+
+  useEffect(() => {
+    if (
+      demographics.speach_experience === "yes" &&
+      speechExperienceRef.current
+    ) {
+      speechExperienceRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+
+    if (
+      demographics.speach_experience === "yes" &&
+      demographics.speach_role === "drugo" &&
+      speechExperienceOtherInputRef.current
+    ) {
+      speechExperienceOtherInputRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [demographics.speach_experience, demographics.speach_role]);
+
+  useEffect(() => {
+    if (
+      demographics.synthetic_speach_experience === "yes" &&
+      syntheticSpeechExperienceRef.current
+    ) {
+      syntheticSpeechExperienceRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+
+    if (
+      demographics.synthetic_speach_experience === "yes" &&
+      demographics.synthetic_speach_role === "drugo" &&
+      syntheticSpeechExperienceOtherInputRef.current
+    ) {
+      syntheticSpeechExperienceOtherInputRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [demographics.synthetic_speach_experience, demographics.synthetic_speach_role]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F3E7E9] to-[#E3EEFF] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#F3E7E9] to-[#E3EEFF] flex items-center justify-center p-4 max-h-screen overflow-y-auto">
       <Card className="sm:max-w-5xl 2xl:max-w-6xl bg-white overflow-hidden w-full">
         <ProgressBar percentage={progressPercentage} />
         <CardContent className="p-4 pt-6 sm:p-8">
@@ -64,22 +138,22 @@ export function DemographicsPage({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="namizni računalnik z ločenimi zvočniki">
-                      Namizni računalnik z ločenimi zvočniki
+                      namizni računalnik z ločenimi zvočniki
                     </SelectItem>
                     <SelectItem value="prenosni računalnik z vgrajenimi zvočniki">
-                      Prenosni računalnik z vgrajenimi zvočniki
+                      prenosni računalnik z vgrajenimi zvočniki
                     </SelectItem>
-                    <SelectItem value="tablica">Tablica</SelectItem>
-                    <SelectItem value="telefon">Telefon</SelectItem>
+                    <SelectItem value="tablica">tablica</SelectItem>
+                    <SelectItem value="telefon">telefon</SelectItem>
 
                     <SelectItem value="prenosni bluetooth zvočnik">
-                      Prenosni bluetooth zvočnik
+                      prenosni bluetooth zvočnik
                     </SelectItem>
-                    <SelectItem value="slušalke">Slušalke</SelectItem>
+                    <SelectItem value="slušalke">slušalke</SelectItem>
                     <SelectItem value="visokokakovosten zvočni sistem">
-                      Visokokakovosten zvočni
+                      visokokakovosten zvočni sistem
                     </SelectItem>
-                    <SelectItem value="drugo">Drugo (vpiši):</SelectItem>
+                    <SelectItem value="drugo">drugo (vpiši):</SelectItem>
                   </SelectContent>
                 </Select>
                 {demographics.device_lable === "drugo" && (
@@ -113,18 +187,18 @@ export function DemographicsPage({
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="moški" id="gender-male" />
-                    <Label htmlFor="gender-male">Moški</Label>
+                    <Label htmlFor="gender-male">moški</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="ženski" id="gender-female" />
-                    <Label htmlFor="gender-female">Ženska</Label>
+                    <Label htmlFor="gender-female">ženska</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem
                       value="ne želim se opredeliti"
                       id="gender-other"
                     />
-                    <Label htmlFor="gender-other">Ne želim se opredeliti</Label>
+                    <Label htmlFor="gender-other">ne želim se opredeliti</Label>
                   </div>
                 </RadioGroup>
               </div>
@@ -142,24 +216,24 @@ export function DemographicsPage({
                     <SelectValue placeholder="Izberite stopnjo izobrazbe" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="osnovnošolska">Osnovna šola</SelectItem>
-                    <SelectItem value="srednješolska">Srednja šola</SelectItem>
+                    <SelectItem value="osnovnošolska">osnovna šola</SelectItem>
+                    <SelectItem value="srednješolska">srednja šola</SelectItem>
                     <SelectItem value="višješolska">
-                      Višješolska izobrazba
+                      višješolska izobrazba
                     </SelectItem>
                     <SelectItem value="visokošolska (1. bolonjska stopnja)">
-                      Visokošolska (1. bolonjska stopnja)
+                      visokošolska (1. bolonjska stopnja)
                     </SelectItem>
                     <SelectItem value="univerzitetna (2. bolonjska stopnja)">
-                      Univerzitetna izobrazba (1. stopnja)
+                      univerzitetna izobrazba (2. bolonjska stopnja)
                     </SelectItem>
                     <SelectItem value="magisterij znanosti">
-                      Magisterij znanosti
+                      magisterij znanosti
                     </SelectItem>
                     <SelectItem value="doktorat znanosti">
-                      Doktorat znanosti
+                      doktorat znanosti
                     </SelectItem>
-                    <SelectItem value="drugo">Drugo</SelectItem>
+                    <SelectItem value="drugo">drugo</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -178,16 +252,19 @@ export function DemographicsPage({
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yes" id="audio-yes" />
-                    <Label htmlFor="audio-yes">Da</Label>
+                    <Label htmlFor="audio-yes">da</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="no" id="audio-no" />
-                    <Label htmlFor="audio-no">Ne</Label>
+                    <Label htmlFor="audio-no">ne</Label>
                   </div>
                 </RadioGroup>
 
                 {demographics.media_experience === "yes" && (
-                  <div className="pl-6 pt-2 space-y-3 px-3">
+                  <div
+                    ref={mediaExperienceRef}
+                    className="pl-6 pt-2 space-y-3 px-3"
+                  >
                     <Label className="text-sm font-medium">
                       Kakšna je vaša vloga v elektronskih medijih?
                     </Label>
@@ -269,11 +346,14 @@ export function DemographicsPage({
                         </Label>
                       </div>
                       {demographics.media_role === "drugo" && (
-                        <div className="pl-6">
+                        <div ref={mediaExperienceOtherInputRef} className="pl-6">
                           <Input
                             // value={demographics.media_other_input}
                             onChange={(e) =>
-                              onDemographicsChange("media_other_input", e.target.value)
+                              onDemographicsChange(
+                                "media_other_input",
+                                e.target.value
+                              )
                             }
                             placeholder="Vpišite vaš poklic"
                             className="mt-1"
@@ -298,16 +378,19 @@ export function DemographicsPage({
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yes" id="lang-yes" />
-                    <Label htmlFor="lang-yes">Da</Label>
+                    <Label htmlFor="lang-yes">da</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="no" id="lang-no" />
-                    <Label htmlFor="lang-no">Ne</Label>
+                    <Label htmlFor="lang-no">ne</Label>
                   </div>
                 </RadioGroup>
 
                 {demographics.speach_experience === "yes" && (
-                  <div className="pl-6 pt-2 space-y-3 px-3">
+                  <div
+                    ref={speechExperienceRef}
+                    className="pl-6 pt-2 space-y-3 px-3"
+                  >
                     <Label className="text-sm font-medium">
                       Kateri je vaš poklic, ki vključuje govor, glas ali jezik?
                     </Label>
@@ -419,7 +502,7 @@ export function DemographicsPage({
                         </Label>
                       </div>
                       {demographics.speach_role === "drugo" && (
-                        <div className="pl-6">
+                        <div ref={speechExperienceOtherInputRef} className="pl-6">
                           <Input
                             // value={demographics.speach_other_role}
                             onChange={(e) =>
@@ -450,16 +533,19 @@ export function DemographicsPage({
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yes" id="synth-yes" />
-                    <Label htmlFor="synth-yes">Da</Label>
+                    <Label htmlFor="synth-yes">da</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="no" id="synth-no" />
-                    <Label htmlFor="synth-no">Ne</Label>
+                    <Label htmlFor="synth-no">ne</Label>
                   </div>
                 </RadioGroup>
 
                 {demographics.synthetic_speach_experience === "yes" && (
-                  <div className="pl-6 pt-2 space-y-3 px-3">
+                  <div
+                    ref={syntheticSpeechExperienceRef}
+                    className="pl-6 pt-2 space-y-3 px-3"
+                  >
                     <Label className="text-sm font-medium">
                       Kakšne izkušnje imate s sintetiziranim govorom?
                     </Label>
@@ -521,7 +607,7 @@ export function DemographicsPage({
                         </Label>
                       </div>
                       {demographics.synthetic_speach_role === "drugo" && (
-                        <div className="pl-6 pb-6">
+                        <div ref={syntheticSpeechExperienceOtherInputRef} className="pl-6 pb-6">
                           <Input
                             // value={demographics.synthetic_speach_other_role}
                             onChange={(e) =>
