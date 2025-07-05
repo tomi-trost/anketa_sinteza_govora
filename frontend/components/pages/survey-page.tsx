@@ -11,7 +11,7 @@ import {
   AudioGroup,
   VoiceRecognition,
 } from "@/lib/types/survey";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 
 interface SurveyPageProps {
   progressPercentage: number;
@@ -57,6 +57,17 @@ export function SurveyPage({
     );
   }
 
+  const questionAnswersRef = useRef<HTMLDivElement | null>(null);
+  const audioRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const additionalQuestionsRef = useRef<HTMLDivElement | null>(null);
+
+  // inputs
+  const nameInputRef1 = useRef<HTMLInputElement | null>(null);
+  const nameInputRef2 = useRef<HTMLInputElement | null>(null);
+
+  const currentGroup = audioGroups[currentAudioGroupIndex];
+  const allQuestionsAnswered = currentGroup.questions.every((q) => q.answered);
+
   const scrollToAudio = (questionId: string) => {
     const audioEl = audioRefs.current[questionId];
     if (audioEl) {
@@ -70,18 +81,20 @@ export function SurveyPage({
     const firstUnansweredQuestion = currentGroup.questions.find(
       (q) => !q.answered
     );
-    if (firstUnansweredQuestion) {
+    if (firstUnansweredQuestion && !allQuestionsAnswered) {
       scrollToAudio(firstUnansweredQuestion.id);
     }
   }, [currentAudioGroupIndex, audioGroups]);
 
-  const questionAnswersRef = useRef<HTMLDivElement | null>(null);
-  const audioRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const additionalQuestionsRef = useRef<HTMLDivElement | null>(null);
-
-  const currentGroup = audioGroups[currentAudioGroupIndex];
-  const allQuestionsAnswered = currentGroup.questions.every((q) => q.answered);
-
+  
+  useEffect(() => {
+    if (currentGroup.voiceRecognition.recognized === "Govorca ne poznam osebno, vem pa, kdo je" && nameInputRef1.current) {
+      nameInputRef1.current.focus();
+    }
+    if (currentGroup.voiceRecognition.recognized === "Govorca osebno poznam" && nameInputRef2.current) {
+      nameInputRef2.current.focus();
+    }
+  }, [currentGroup.voiceRecognition.recognized]);
   
 
   useEffect(() => {
@@ -345,6 +358,7 @@ export function SurveyPage({
                         "Govorca ne poznam osebno, vem pa, kdo je" && (
                         <div className="pl-6">
                           <Input
+                            ref={nameInputRef1}
                             placeholder="Vpiši ime"
                             value={currentGroup.voiceRecognition.speakerName}
                             onChange={(e) =>
@@ -373,6 +387,7 @@ export function SurveyPage({
                         "Govorca osebno poznam" && (
                         <div className="pl-6">
                           <Input
+                            ref={nameInputRef2}
                             placeholder="Vpiši ime"
                             value={currentGroup.voiceRecognition.speakerName}
                             onChange={(e) =>

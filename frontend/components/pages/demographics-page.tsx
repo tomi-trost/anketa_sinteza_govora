@@ -38,9 +38,21 @@ export function DemographicsPage({
   const speechExperienceRef = useRef<HTMLDivElement | null>(null);
   const speechExperienceOtherInputRef = useRef<HTMLInputElement | null>(null);
   const syntheticSpeechExperienceRef = useRef<HTMLDivElement | null>(null);
-  const syntheticSpeechExperienceOtherInputRef = useRef<HTMLInputElement | null>(
-    null
-  );
+  const syntheticSpeechExperienceOtherInputRef =
+    useRef<HTMLInputElement | null>(null);
+
+  // inputs
+  const deviceInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (deviceInputRef.current && demographics.device_lable === "drugo") {
+      deviceInputRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      deviceInputRef.current.focus();
+    }
+  }, [demographics.device_lable]);
 
   useEffect(() => {
     if (demographics.media_experience === "yes" && mediaExperienceRef.current) {
@@ -59,6 +71,7 @@ export function DemographicsPage({
         behavior: "smooth",
         block: "start",
       });
+      mediaExperienceOtherInputRef.current.focus();
     }
   }, [demographics.media_experience, demographics.media_role]);
 
@@ -82,6 +95,7 @@ export function DemographicsPage({
         behavior: "smooth",
         block: "start",
       });
+      speechExperienceOtherInputRef.current.focus();
     }
   }, [demographics.speach_experience, demographics.speach_role]);
 
@@ -105,8 +119,12 @@ export function DemographicsPage({
         behavior: "smooth",
         block: "start",
       });
+      syntheticSpeechExperienceOtherInputRef.current.focus();
     }
-  }, [demographics.synthetic_speach_experience, demographics.synthetic_speach_role]);
+  }, [
+    demographics.synthetic_speach_experience,
+    demographics.synthetic_speach_role,
+  ]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F3E7E9] to-[#E3EEFF] flex items-center justify-center p-4 max-h-screen overflow-y-auto">
@@ -163,6 +181,7 @@ export function DemographicsPage({
                     </Label>
                     <Input
                       // value={demographics.device_other_input}
+                      ref={deviceInputRef}
                       onChange={(e) =>
                         onDemographicsChange(
                           "device_other_input",
@@ -218,14 +237,12 @@ export function DemographicsPage({
                   <SelectContent>
                     <SelectItem value="osnovnošolska">osnovna šola</SelectItem>
                     <SelectItem value="srednješolska">srednja šola</SelectItem>
-                    <SelectItem value="višješolska">
-                      višješolska izobrazba
-                    </SelectItem>
+                    <SelectItem value="višješolska">višješolska</SelectItem>
                     <SelectItem value="visokošolska (1. bolonjska stopnja)">
                       visokošolska (1. bolonjska stopnja)
                     </SelectItem>
                     <SelectItem value="univerzitetna (2. bolonjska stopnja)">
-                      univerzitetna izobrazba (2. bolonjska stopnja)
+                      univerzitetna (2. bolonjska stopnja)
                     </SelectItem>
                     <SelectItem value="magisterij znanosti">
                       magisterij znanosti
@@ -346,8 +363,9 @@ export function DemographicsPage({
                         </Label>
                       </div>
                       {demographics.media_role === "drugo" && (
-                        <div ref={mediaExperienceOtherInputRef} className="pl-6">
+                        <div className="pl-6">
                           <Input
+                            ref={mediaExperienceOtherInputRef}
                             // value={demographics.media_other_input}
                             onChange={(e) =>
                               onDemographicsChange(
@@ -502,8 +520,9 @@ export function DemographicsPage({
                         </Label>
                       </div>
                       {demographics.speach_role === "drugo" && (
-                        <div ref={speechExperienceOtherInputRef} className="pl-6">
+                        <div className="pl-6">
                           <Input
+                            ref={speechExperienceOtherInputRef}
                             // value={demographics.speach_other_role}
                             onChange={(e) =>
                               onDemographicsChange(
@@ -607,8 +626,9 @@ export function DemographicsPage({
                         </Label>
                       </div>
                       {demographics.synthetic_speach_role === "drugo" && (
-                        <div ref={syntheticSpeechExperienceOtherInputRef} className="pl-6 pb-6">
+                        <div className="pl-6 pb-6">
                           <Input
+                            ref={syntheticSpeechExperienceOtherInputRef}
                             // value={demographics.synthetic_speach_other_role}
                             onChange={(e) =>
                               onDemographicsChange(

@@ -142,8 +142,6 @@ export function useSurvey() {
                 for (let j = 0; j < group.questions.length; j++) {
                   const question = group.questions[j];
                   if (!question.answered) {
-                    
-
                     found = true;
                     break;
                   }
