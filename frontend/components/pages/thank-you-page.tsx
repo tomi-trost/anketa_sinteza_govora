@@ -81,20 +81,28 @@ export function ThankYouPage({ progressPercentage }: ThankYouPageProps) {
             {!mailSubmitted ? (
               <div className="mt-8 max-w-md mx-auto w-full">
                 <div className="space-y-4 flex justify-center items-center gap-2 w-full">
-                  <Input
-                    type="email"
-                    placeholder="Vpiši e-naslov"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full mt-4"
-                  />
-
-                  <Button
-                    onClick={handleEmailSubmit}
-                    className="bg-black text-white hover:bg-gray-800 "
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault(); // prevent page reload
+                      handleEmailSubmit(); // call your existing submit function
+                    }}
+                    className="space-y-4 flex justify-center items-center gap-2 w-full"
                   >
-                    Pošlji
-                  </Button>
+                    <Input
+                      type="email"
+                      placeholder="Vpiši e-naslov"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full mt-4"
+                    />
+
+                    <Button
+                      type="submit"
+                      className="bg-black text-white hover:bg-gray-800 "
+                    >
+                      Pošlji
+                    </Button>
+                  </form>
                 </div>
               </div>
             ) : (
