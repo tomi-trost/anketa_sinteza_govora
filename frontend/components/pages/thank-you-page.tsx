@@ -18,14 +18,14 @@ export function ThankYouPage({ progressPercentage }: ThankYouPageProps) {
 
   const handleEmailSubmit = () => {
     if (email.trim()) {
-      submitMail(email).then(() => {
-      
-        console.log("Email submitted:", email);
-      }).catch((error) => {
-        console.error("Error submitting email:", error);
-        // Handle error (e.g., show a notification)
-      });
-      
+      submitMail(email)
+        .then(() => {
+          console.log("Email submitted:", email);
+        })
+        .catch((error) => {
+          console.error("Error submitting email:", error);
+          // Handle error (e.g., show a notification)
+        });
     }
   };
 
@@ -81,22 +81,29 @@ export function ThankYouPage({ progressPercentage }: ThankYouPageProps) {
             {!mailSubmitted ? (
               <div className="mt-8 max-w-md mx-auto w-full">
                 <div className="space-y-4 flex justify-center items-center gap-2 w-full">
-                  <Input
-                    type="email"
-                    placeholder="Vpiši e-naslov"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full mt-4"
-                  />
-
-                  <Button
-                    onClick={handleEmailSubmit}
-                    className="bg-black text-white hover:bg-gray-800 "
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault(); // prevent page reload
+                      handleEmailSubmit(); // call your existing submit function
+                    }}
+                    className="space-y-4 flex justify-center items-center gap-2 w-full"
                   >
-                    Pošlji
-                  </Button>
+                    <Input
+                      type="email"
+                      placeholder="Vpiši e-naslov"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full mt-4"
+                    />
+
+                    <Button
+                      type="submit"
+                      className="bg-black text-white hover:bg-gray-800 "
+                    >
+                      Pošlji
+                    </Button>
+                  </form>
                 </div>
-                
               </div>
             ) : (
               <div className="mt-8 p-4 bg-green-50 rounded-lg">
@@ -141,12 +148,15 @@ export function ThankYouPage({ progressPercentage }: ThankYouPageProps) {
                   <br />
                   Rezultate bomo predstavili na simpoziju{" "}
                   <strong>
-                    <a href="https://www.agrft.uni-lj.si/blog/2025/01/26/govor-glas-identiteta/" className=" text-blue-600 hover:text-blue-800 visited:text-purple-600 duration-300 ease-in-out">
+                    <a
+                      href="https://www.agrft.uni-lj.si/blog/2025/01/26/govor-glas-identiteta/"
+                      className=" text-blue-600 hover:text-blue-800 visited:text-purple-600 duration-300 ease-in-out"
+                    >
                       GOVOR. GLAS. IDENTITETA.
                     </a>
                   </strong>{" "}
                   na Akademiji za gledališče, radio, film in televizijo Univerze
-                  v Ljubljani 29. in 30. 9. 2025.
+                  v Ljubljani 29. in 30. septembra ter 1. oktobra 2025.
                 </p>
               </div>
             </div>
