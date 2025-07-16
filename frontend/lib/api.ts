@@ -212,7 +212,9 @@ export async function getUserData(userId: string): Promise<any> {
 // Get audio files
 export async function getAudioFiles(): Promise<AudioGroup[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/audio`);
+    //console.log("API_BASE_URL:", API_BASE_URL);
+    // console.log("MEDIA_URL:", MEDIA_URL);
+    const response = await fetch(`${API_BASE_URL}/audio/`);
 
     if (!response.ok) {
       throw new Error(`API error: ${response.status}`);
@@ -285,7 +287,6 @@ export const submitAudioReview = async (
   review: string
 ): Promise<any> => {
   try {
-    
     const response = await fetch(`${API_BASE_URL}/audio/review/${audio_id}`, {
       method: "POST",
       headers: {
