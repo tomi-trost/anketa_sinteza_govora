@@ -1,5 +1,6 @@
 ﻿import csv
 import re
+from zoneinfo import ZoneInfo
 
 from sqlmodel import Session, select
 from app.core.db import engine 
@@ -126,7 +127,7 @@ def export_users_to_csv(output_path="survey_export.csv"):
         for user in users:
             base_data = {
                 "id": str(user.id),
-                "created_at": user.created_at.isoformat() if user.created_at else "",
+                "created_at": user.created_at.astimezone(ZoneInfo("Europe/Ljubljana")).isoformat() if user.created_at else "",
                 "ip": str(user.ip) if user.ip else -99,
             }
 
