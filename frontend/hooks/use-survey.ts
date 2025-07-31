@@ -226,6 +226,7 @@ export function useSurvey() {
       await submitAudioReview(savedToken, audio_id, review);
     } catch (error) {
       console.error("Failed to save audio review:", error);
+      throw error;
     }
   };
 
@@ -434,15 +435,23 @@ export function useSurvey() {
     questionId: string,
     answer: string
   ) => {
-    saveAudioReview(questionId, answer).then(() => {
-      setAudioGroups((prev) => {
-        const newGroups = [...prev];
-        newGroups[groupIndex].questions = newGroups[groupIndex].questions.map(
-          (q) => (q.id === questionId ? { ...q, answer, answered: true } : q)
+    saveAudioReview(questionId, answer)
+      .then((response) => {
+        setAudioGroups((prev) => {
+          const newGroups = [...prev];
+          newGroups[groupIndex].questions = newGroups[groupIndex].questions.map(
+            (q) => (q.id === questionId ? { ...q, answer, answered: true } : q)
+          );
+          return newGroups;
+        });
+      })
+      .catch((error) => {
+        console.error("Failed to save audio review:", error);
+        // show a notification to user to check their internet connection
+        alert(
+          "Failed to save your answer. Please check your internet connection."
         );
-        return newGroups;
       });
-    });
   };
 
   const handleNextPageSurvey = async (
